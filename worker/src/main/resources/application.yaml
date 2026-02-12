@@ -1,0 +1,23 @@
+server:
+  port: 8081
+
+
+camunda.bpm.admin-user:
+  id: ${CAMUNDA-USER-ADMIN-ID}
+  password: ${CAMUNDA-USER-ADMIN-PASSWORD}
+
+spring:
+  datasource:
+
+    username: ${POSTGRES-USER}
+    password: ${POSTGRES-PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+
+hibernate:
+  dialect: org.hibernate.dialect.HSQLDialect

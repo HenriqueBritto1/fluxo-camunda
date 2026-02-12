@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+camunda.bpm:
+  database:
+    schema-update: true
+    type: h2
+
+camunda.bpm.admin-user:
+  id: ${CAMUNDA-USER-ADMIN-ID}
+  password: ${CAMUNDA-USER-ADMIN-PASSWORD}
+
+spring:
+  datasource:
+    url: jdbc:h2:file:./camunda-h2-database
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+
+hibernate:
+  dialect: org.hibernate.dialect.HSQLDialect
