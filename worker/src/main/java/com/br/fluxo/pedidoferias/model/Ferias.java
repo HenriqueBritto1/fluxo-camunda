@@ -29,7 +29,7 @@ public class Ferias {
     private LocalDate dataFinal;
 
     @Column
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private TempoFeriasEnum quantidade;
 
     @Column

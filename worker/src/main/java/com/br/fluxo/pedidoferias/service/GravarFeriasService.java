@@ -32,7 +32,7 @@ public class GravarFeriasService {
 
         TempoFeriasEnum tempo = TempoFeriasEnum.valueOf(externalTask.getVariable("tempo_ferias"));
 
-        LocalDate dataFormatadaFinal = dataFormatadaInicial.plusDays(tempo.ordinal());
+        LocalDate dataFormatadaFinal = dataFormatadaInicial.plusDays(tempo.getValor());
 
         Boolean aprovado = externalTask.getVariable("aprovado");
 

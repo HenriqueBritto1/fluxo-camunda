@@ -6,5 +6,10 @@ public enum TempoFeriasEnum {
     TRINTA_DIAS(30);
 
     private int valor;
-    TempoFeriasEnum(int valor) {}
+
+    public int getValor() {
+        return valor;
+    }
+
+    TempoFeriasEnum(int valor) {this.valor = valor;}
 }

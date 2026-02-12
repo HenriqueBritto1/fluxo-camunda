@@ -3,14 +3,14 @@ server:
 
 
 camunda.bpm.admin-user:
-  id: admin
-  password: admin
+  id: ${CAMUNDA-USER-ADMIN-ID}
+  password: ${CAMUNDA-USER-ADMIN-PASSWORD}
 
 spring:
   datasource:
 
-    username: postgres
-    password: admin
+    username: ${POSTGRES-USER}
+    password: ${POSTGRES-PASSWORD}
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
 
