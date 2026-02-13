@@ -1,0 +1,4 @@
+com\br\fluxo\pedidoferias\ApplicationWorker.class
+com\br\fluxo\pedidoferias\config\ExternalTaskConfig.class
+com\br\fluxo\pedidoferias\service\EnviarNotificacaoService.class
+com\br\fluxo\pedidoferias\worker\EnviarNotificacaoWorker.class

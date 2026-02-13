@@ -1,0 +1,19 @@
+Index: worker/src/main/java/com/br/fluxo/pedidoferias/service/GravarFeriasService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.br.fluxo.pedidoferias.service;\r\n\r\nimport com.br.fluxo.pedidoferias.common.TempoFeriasEnum;\r\nimport com.br.fluxo.pedidoferias.model.Ferias;\r\nimport com.br.fluxo.pedidoferias.repository.FeriasRepository;\r\nimport org.camunda.bpm.client.task.ExternalTask;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.time.LocalDate;\r\nimport java.time.ZoneId;\r\nimport java.time.format.DateTimeFormatter;\r\nimport java.util.Date;\r\n\r\n@Service\r\npublic class GravarFeriasService {\r\n    @Autowired\r\n    private FeriasRepository feriasRepository;\r\n\r\n    public void gravarFeriasDB(Ferias ferias) {\r\n        feriasRepository.save(ferias);\r\n    }\r\n\r\n    public Ferias getVariaveisFerias(ExternalTask externalTask) {\r\n\r\n        String nome = externalTask.getVariable(\"nome\");\r\n\r\n        Date data = externalTask.getVariable(\"data_ferias\");\r\n        LocalDate dataFormatadaInicial = data.toInstant()\r\n                .atZone(ZoneId.systemDefault())\r\n                .toLocalDate();\r\n\r\n        TempoFeriasEnum tempo = TempoFeriasEnum.valueOf(externalTask.getVariable(\"tempo_ferias\"));\r\n\r\n        LocalDate dataFormatadaFinal = dataFormatadaInicial.plusDays(tempo.getValor());\r\n\r\n        Boolean aprovado = externalTask.getVariable(\"aprovado\");\r\n\r\n        Ferias ferias = new Ferias();\r\n        ferias.setNome(nome);\r\n        ferias.setAprovado(aprovado);\r\n        ferias.setDataInicial(dataFormatadaInicial);\r\n        ferias.setDataFinal(dataFormatadaFinal);\r\n        ferias.setQuantidade(tempo);\r\n\r\n        return ferias;\r\n\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/worker/src/main/java/com/br/fluxo/pedidoferias/service/GravarFeriasService.java b/worker/src/main/java/com/br/fluxo/pedidoferias/service/GravarFeriasService.java
+--- a/worker/src/main/java/com/br/fluxo/pedidoferias/service/GravarFeriasService.java	(revision 636af3b65e6fcd5e6266c0e2c5a14a15b5e979bb)
++++ b/worker/src/main/java/com/br/fluxo/pedidoferias/service/GravarFeriasService.java	(date 1770908603451)
+@@ -32,7 +32,7 @@
+ 
+         TempoFeriasEnum tempo = TempoFeriasEnum.valueOf(externalTask.getVariable("tempo_ferias"));
+ 
+-        LocalDate dataFormatadaFinal = dataFormatadaInicial.plusDays(tempo.getValor());
++        LocalDate dataFormatadaFinal = dataFormatadaInicial.plusDays(tempo.getValor() - 1);
+ 
+         Boolean aprovado = externalTask.getVariable("aprovado");
+ 
