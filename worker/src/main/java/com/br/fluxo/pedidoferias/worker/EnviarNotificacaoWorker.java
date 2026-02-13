@@ -57,4 +57,31 @@ public class EnviarNotificacaoWorker {
                 .open();
     }
 
+    @PostConstruct
+    public void enviarNotificacaoAprovado() {
+        LOGGER.info("SUBSCRIBE EXECUTADO");
+        client.subscribe("notifica-aprovado")
+                .handler((externalTask, externalTaskService) -> {
+                    try {
+                        LOGGER.info("Processo: " + externalTask.getProcessInstanceId());
+                        notificacaoService.enviarEmailAprovado(externalTask.getVariable("email"));
+
+                        externalTaskService.complete(externalTask);
+                    }catch (Exception ex){
+
+                        Integer retries = externalTask.getRetries();
+                        retries = (retries == null) ? 3 : retries - 1;
+
+                        externalTaskService.handleFailure(
+                                externalTask,
+                                "Erro ao enviar notificação",
+                                ex.getMessage(),
+                                retries,
+                                1000
+                        );
+                    }
+                })
+                .open();
+    }
+
 }

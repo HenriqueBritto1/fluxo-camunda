@@ -28,4 +28,16 @@ public class EnviarNotificacaoService {
         mailMessage.setFrom(username);
         mailSender.send(mailMessage);
     }
+
+    public void enviarEmailAprovado(String to) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+
+        String mensagem = "Olá, Prezado(a), sua solicitação de férias foi aprovada!";
+
+        mailMessage.setTo(to);
+        mailMessage.setSubject("Férias aprovadas!");
+        mailMessage.setText(mensagem);
+        mailMessage.setFrom(username);
+        mailSender.send(mailMessage);
+    }
 }

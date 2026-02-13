@@ -82,8 +82,9 @@
       <bpmn:incoming>Flow_0xunekc</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0oft9qx" camunda:type="external" camunda:topic="notifica-negado" />
     </bpmn:endEvent>
-    <bpmn:endEvent id="Event_01p2k7g">
+    <bpmn:endEvent id="Event_01p2k7g" name="Notifica funcionário">
       <bpmn:incoming>Flow_0m0sy9f</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1tlf635" camunda:type="external" camunda:topic="notifica-aprovado" />
     </bpmn:endEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -124,8 +125,11 @@
           <dc:Bounds x="674" y="335" width="54" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_01p2k7g_di" bpmnElement="Event_01p2k7g">
+      <bpmndi:BPMNShape id="Event_0jzkztt_di" bpmnElement="Event_01p2k7g">
         <dc:Bounds x="882" y="452" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="873" y="495" width="54" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1fp17al_di" bpmnElement="SequenceFlow_1fp17al">
         <di:waypoint x="215" y="160" />
