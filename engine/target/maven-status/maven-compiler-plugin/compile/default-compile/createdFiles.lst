@@ -1,0 +1,6 @@
+com\br\fluxo\common\TempoFeriasEnum.class
+com\br\fluxo\Application.class
+com\br\fluxo\repository\FeriasRepository.class
+com\br\fluxo\service\GravarFeriasService.class
+com\br\fluxo\model\Ferias.class
+com\br\fluxo\delegate\GravarFerias.class

@@ -6,21 +6,20 @@
   <bpmn:process id="fluxo-process" isExecutable="true" camunda:historyTimeToLive="180">
     <bpmn:laneSet id="LaneSet_08lbisx">
       <bpmn:lane id="Lane_0x4qwhy" name="Funcionario">
-        <bpmn:flowNodeRef>solicita-ferias</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>solicitaFerias</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_032p1wr</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_19oapfk</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_1veez7j" name="Gestor">
-        <bpmn:flowNodeRef>Event_01p2k7g</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_0biwcvw</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_1r0biud</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>GravarFerias</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1r0biud</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ValidaSolicitacao</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0fugbd2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_01p2k7g</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:sequenceFlow id="SequenceFlow_1fp17al" sourceRef="StartEvent_1" targetRef="solicita-ferias" />
-    <bpmn:sequenceFlow id="Flow_0nuewwx" sourceRef="solicita-ferias" targetRef="Activity_0biwcvw" />
-    <bpmn:userTask id="solicita-ferias" name="Solicita ferias" camunda:candidateGroups="funcionario" camunda:priority="2">
+    <bpmn:sequenceFlow id="SequenceFlow_1fp17al" sourceRef="StartEvent_1" targetRef="solicitaFerias" />
+    <bpmn:sequenceFlow id="Flow_0nuewwx" sourceRef="solicitaFerias" targetRef="ValidaSolicitacao" />
+    <bpmn:userTask id="solicitaFerias" name="Fazer pedido de férias" camunda:candidateGroups="funcionario" camunda:priority="2">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="nome" label="Nome completo" type="string" />
@@ -31,29 +30,33 @@
             <camunda:value id="QUINZE_DIAS" name="15 dias" />
             <camunda:value id="TRINTA_DIAS" name="30 dias" />
           </camunda:formField>
+          <camunda:formField id="email" label="Email" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1fp17al</bpmn:incoming>
       <bpmn:outgoing>Flow_0nuewwx</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_0mhwopd" sourceRef="Activity_0biwcvw" targetRef="Gateway_1r0biud" />
-    <bpmn:startEvent id="StartEvent_1" camunda:initiator="">
+    <bpmn:sequenceFlow id="Flow_0mhwopd" sourceRef="ValidaSolicitacao" targetRef="Gateway_1r0biud" />
+    <bpmn:startEvent id="StartEvent_1" name="" camunda:initiator="">
       <bpmn:outgoing>SequenceFlow_1fp17al</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0xunekc" sourceRef="Gateway_1r0biud" targetRef="Event_19oapfk">
+    <bpmn:sequenceFlow id="Flow_0xunekc" sourceRef="Gateway_1r0biud" targetRef="Event_0fugbd2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${aprovado == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1rvaisi" sourceRef="Gateway_1r0biud" targetRef="GravarFerias">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${aprovado==true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0m0sy9f" sourceRef="GravarFerias" targetRef="Event_01p2k7g" />
-    <bpmn:endEvent id="Event_032p1wr">
-      <bpmn:incoming>Flow_1kglsik</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:endEvent id="Event_01p2k7g">
-      <bpmn:incoming>Flow_0m0sy9f</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:userTask id="Activity_0biwcvw" name="Valida solicitação" camunda:candidateGroups="gestor" camunda:priority="1">
+    <bpmn:serviceTask id="GravarFerias" name="Gravar ferias no banco" camunda:class="com.br.fluxo.delegate.GravarFerias">
+      <bpmn:incoming>Flow_1rvaisi</bpmn:incoming>
+      <bpmn:outgoing>Flow_0m0sy9f</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_1r0biud">
+      <bpmn:incoming>Flow_0mhwopd</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xunekc</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1rvaisi</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="ValidaSolicitacao" name="Validar solicitação" camunda:candidateGroups="gestor" camunda:priority="1">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="nome" label="Nome do colaborador" type="string">
@@ -70,68 +73,67 @@
             </camunda:validation>
           </camunda:formField>
           <camunda:formField id="aprovado" label="Aprovado" type="boolean" defaultValue="false" />
+          <camunda:formField id="obs" label="Observação" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0nuewwx</bpmn:incoming>
       <bpmn:outgoing>Flow_0mhwopd</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:exclusiveGateway id="Gateway_1r0biud">
-      <bpmn:incoming>Flow_0mhwopd</bpmn:incoming>
-      <bpmn:outgoing>Flow_0xunekc</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1rvaisi</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="GravarFerias" name="Gravar ferias no banco" camunda:type="external" camunda:topic="gravar-ferias">
-      <bpmn:incoming>Flow_1rvaisi</bpmn:incoming>
-      <bpmn:outgoing>Flow_0m0sy9f</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:intermediateCatchEvent id="Event_19oapfk">
+    <bpmn:endEvent id="Event_0fugbd2" name="Notifica funcionário">
       <bpmn:incoming>Flow_0xunekc</bpmn:incoming>
-      <bpmn:outgoing>Flow_1kglsik</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="TimerEventDefinition_19ed5b5">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT60S</bpmn:timeDuration>
-      </bpmn:timerEventDefinition>
-    </bpmn:intermediateCatchEvent>
-    <bpmn:sequenceFlow id="Flow_1kglsik" sourceRef="Event_19oapfk" targetRef="Event_032p1wr" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0oft9qx" camunda:type="external" camunda:topic="notifica-negado" />
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Event_01p2k7g" name="Notifica funcionário">
+      <bpmn:incoming>Flow_0m0sy9f</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1tlf635" camunda:type="external" camunda:topic="notifica-aprovado" />
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0fejvof">
       <bpmndi:BPMNShape id="Participant_0omkl8t_di" bpmnElement="Participant_0omkl8t" isHorizontal="true">
-        <dc:Bounds x="120" y="50" width="1108" height="420" />
+        <dc:Bounds x="120" y="50" width="1108" height="490" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_1veez7j_di" bpmnElement="Lane_1veez7j" isHorizontal="true">
-        <dc:Bounds x="150" y="260" width="1078" height="210" />
+        <dc:Bounds x="150" y="260" width="1078" height="280" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_0x4qwhy_di" bpmnElement="Lane_0x4qwhy" isHorizontal="true">
         <dc:Bounds x="150" y="50" width="1078" height="210" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="UserTask_08mft2c_di" bpmnElement="solicita-ferias">
+      <bpmndi:BPMNShape id="UserTask_08mft2c_di" bpmnElement="solicitaFerias">
         <dc:Bounds x="270" y="120" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1nfuf29_di" bpmnElement="Activity_0biwcvw">
-        <dc:Bounds x="270" y="310" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1td9lpo_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="142" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1r0biud_di" bpmnElement="Gateway_1r0biud" isMarkerVisible="true">
-        <dc:Bounds x="505" y="325" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1uqo9nf_di" bpmnElement="Event_19oapfk">
-        <dc:Bounds x="682" y="162" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_032p1wr_di" bpmnElement="Event_032p1wr">
-        <dc:Bounds x="822" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="185" width="78" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_11ifybk_di" bpmnElement="GravarFerias">
-        <dc:Bounds x="650" y="310" width="100" height="80" />
+        <dc:Bounds x="650" y="430" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_01p2k7g_di" bpmnElement="Event_01p2k7g">
-        <dc:Bounds x="882" y="332" width="36" height="36" />
+      <bpmndi:BPMNShape id="Gateway_1r0biud_di" bpmnElement="Gateway_1r0biud" isMarkerVisible="true">
+        <dc:Bounds x="505" y="365" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nfuf29_di" bpmnElement="ValidaSolicitacao">
+        <dc:Bounds x="270" y="350" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1qvbn2h_di" bpmnElement="Event_0fugbd2">
+        <dc:Bounds x="682" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="674" y="335" width="54" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0jzkztt_di" bpmnElement="Event_01p2k7g">
+        <dc:Bounds x="882" y="452" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="873" y="495" width="54" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1fp17al_di" bpmnElement="SequenceFlow_1fp17al">
         <di:waypoint x="215" y="160" />
@@ -139,28 +141,25 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0nuewwx_di" bpmnElement="Flow_0nuewwx">
         <di:waypoint x="320" y="200" />
-        <di:waypoint x="320" y="310" />
+        <di:waypoint x="320" y="350" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0mhwopd_di" bpmnElement="Flow_0mhwopd">
-        <di:waypoint x="370" y="350" />
-        <di:waypoint x="505" y="350" />
+        <di:waypoint x="370" y="390" />
+        <di:waypoint x="505" y="390" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0xunekc_di" bpmnElement="Flow_0xunekc">
-        <di:waypoint x="530" y="325" />
-        <di:waypoint x="530" y="180" />
-        <di:waypoint x="682" y="180" />
+        <di:waypoint x="530" y="365" />
+        <di:waypoint x="530" y="310" />
+        <di:waypoint x="682" y="310" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1rvaisi_di" bpmnElement="Flow_1rvaisi">
-        <di:waypoint x="555" y="350" />
-        <di:waypoint x="650" y="350" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1kglsik_di" bpmnElement="Flow_1kglsik">
-        <di:waypoint x="718" y="180" />
-        <di:waypoint x="822" y="180" />
+        <di:waypoint x="530" y="415" />
+        <di:waypoint x="530" y="470" />
+        <di:waypoint x="650" y="470" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0m0sy9f_di" bpmnElement="Flow_0m0sy9f">
-        <di:waypoint x="750" y="350" />
-        <di:waypoint x="882" y="350" />
+        <di:waypoint x="750" y="470" />
+        <di:waypoint x="882" y="470" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

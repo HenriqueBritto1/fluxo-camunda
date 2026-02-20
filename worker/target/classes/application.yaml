@@ -2,13 +2,17 @@ server:
   port: 8081
 
 
-camunda.bpm.admin-user:
-  id: ${CAMUNDA-USER-ADMIN-ID}
-  password: ${CAMUNDA-USER-ADMIN-PASSWORD}
+camunda.bpm:
+  admin-user:
+    id: admin
+    password: admin
+  client:
+    base-url: http://localhost:8080/engine-rest
+
+
 
 spring:
   datasource:
-
     username: ${POSTGRES-USER}
     password: ${POSTGRES-PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -17,7 +21,24 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
-
-hibernate:
-  dialect: org.hibernate.dialect.HSQLDialect
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL-USERNAME}
+    password: ${EMAIL-PASSWORD}
+    protocol: smtp
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: true
+          enable: true
+          starttls:
+            enable: true
+            required: true
+        transport:
+          protocol: smtp
