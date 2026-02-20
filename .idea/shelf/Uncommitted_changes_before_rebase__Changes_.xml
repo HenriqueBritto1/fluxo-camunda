@@ -1,9 +1,0 @@
-<changelist name="Uncommitted_changes_before_rebase_[Changes]" date="1770909169565" recycled="true" deleted="true">
-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]/shelved.patch" />
-  <option name="DESCRIPTION" value="Uncommitted changes before rebase [Changes]" />
-  <binary>
-    <option name="BEFORE_PATH" value="worker/target/classes/com/br/fluxo/pedidoferias/service/GravarFeriasService.class" />
-    <option name="AFTER_PATH" value="worker/target/classes/com/br/fluxo/pedidoferias/service/GravarFeriasService.class" />
-    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]/GravarFeriasService.class" />
-  </binary>
-</changelist>

@@ -9,6 +9,10 @@ import org.camunda.bpm.client.ExternalTaskClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.logging.Logger;
 
 @Component
@@ -35,9 +39,7 @@ public class EnviarNotificacaoWorker {
                     try {
                         LOGGER.info("Processo: " + externalTask.getProcessInstanceId());
 
-                        String email = externalTask.getVariable("email");
-                        LOGGER.info("Email: " + email);
-                        notificacaoService.enviarEmail(email);
+                        notificacaoService.enviarEmailReprovado(externalTask.getVariable("email"), externalTask.getVariable("obs"));
 
                         LOGGER.info("email enviado com sucesso!");
                         externalTaskService.complete(externalTask);
@@ -50,7 +52,7 @@ public class EnviarNotificacaoWorker {
                                 "Erro ao enviar notificação",
                                 ex.getMessage(),
                                 retries,
-                                1000
+                                1000  //72000000
                         );
                     }
                 })
@@ -64,7 +66,11 @@ public class EnviarNotificacaoWorker {
                 .handler((externalTask, externalTaskService) -> {
                     try {
                         LOGGER.info("Processo: " + externalTask.getProcessInstanceId());
-                        notificacaoService.enviarEmailAprovado(externalTask.getVariable("email"));
+
+                        Date data = externalTask.getVariable("data_ferias");
+                        String dataFormatada = data.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+                        notificacaoService.enviarEmailAprovado(externalTask.getVariable("email"), dataFormatada,  externalTask.getVariable("obs"));
 
                         externalTaskService.complete(externalTask);
                     }catch (Exception ex){
@@ -77,7 +83,7 @@ public class EnviarNotificacaoWorker {
                                 "Erro ao enviar notificação",
                                 ex.getMessage(),
                                 retries,
-                                1000
+                                1000 //7200000
                         );
                     }
                 })

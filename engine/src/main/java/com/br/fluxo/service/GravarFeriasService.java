@@ -38,12 +38,15 @@ public class GravarFeriasService {
 
         Boolean aprovado = (Boolean) execution.getVariable("aprovado");
 
+        String observacao = execution.getVariable("obs").toString();
+
         Ferias ferias = new Ferias();
         ferias.setNome(nome);
         ferias.setAprovado(aprovado);
         ferias.setDataInicial(dataFormatadaInicial);
         ferias.setDataFinal(dataFormatadaFinal);
         ferias.setQuantidade(tempo);
+        ferias.setObservacao(observacao);
 
         return ferias;
 

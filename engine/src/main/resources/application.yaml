@@ -24,7 +24,3 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-
-
-hibernate:
-  dialect: org.hibernate.dialect.HSQLDialect

@@ -36,4 +36,7 @@ public class Ferias {
     @Column
     private boolean aprovado;
 
+    @Column
+    private String observacao;
+
 }
