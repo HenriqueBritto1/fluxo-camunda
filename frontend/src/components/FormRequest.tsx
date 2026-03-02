@@ -1,4 +1,5 @@
 import type {FormEvent} from "react";
+import { InstanceService } from "../services/instanceService";
 
 interface ModalProps {
     isOpen: boolean;
@@ -8,7 +9,9 @@ interface ModalProps {
     instanceId: string;
 }
 
-export default function FormRequest({isOpen, onClose, title}: ModalProps){
+export default function FormRequest({isOpen, onClose, title, instanceId}: ModalProps){
+
+
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
@@ -24,6 +27,18 @@ export default function FormRequest({isOpen, onClose, title}: ModalProps){
                     <form onSubmit={handleSubmit}>
                         {title}
                         <div className="form-group">
+                            <label>Nome completo:</label>
+                            <input type="text"/>
+                        </div>
+                        <div className="form-group">
+                            <label>Email:</label>
+                            <input type="text"/>
+                        </div>
+                        <div className="form-group">
+                            <label>Setor:</label>
+                            <input type="text"/>
+                        </div>
+                        <div className="form-group">
                             <label>Data de Início:</label>
                             <input type="date" required />
                         </div>
@@ -38,7 +53,11 @@ export default function FormRequest({isOpen, onClose, title}: ModalProps){
                         </div>
 
                         <div className="modal-actions">
-                            <button type="button" className="btn-cancel" onClick={onClose}>
+                            <button type="button" className="btn-cancel" onClick={async () => {
+                                InstanceService.closeInstance(instanceId)
+                                onClose();
+                            }}
+                            >
                                 Cancelar
                             </button>
                             <button type="submit" className="btn-submit">

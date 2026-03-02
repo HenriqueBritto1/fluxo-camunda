@@ -10,6 +10,7 @@ function App() {
     async function startProcess() {
          const data = await InstanceService.startInstance();
          setInstanceId(data.id);
+         console.log(data.id);
          setOpenModal(true);
     }
 
