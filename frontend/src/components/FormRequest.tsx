@@ -1,5 +1,5 @@
-import type {FormEvent} from "react";
-import { InstanceService } from "../services/instanceService";
+import {type FormEvent, useState} from "react";
+import { InstanceService, type SolicitarFeriasRequest } from "../services/instanceService";
 
 interface ModalProps {
     isOpen: boolean;
@@ -9,12 +9,19 @@ interface ModalProps {
     instanceId: string;
 }
 
-export default function FormRequest({isOpen, onClose, title, instanceId}: ModalProps){
+export default function FormRequest({isOpen, onClose, instanceId}: ModalProps){
+    const [formData, setFormData] = useState<SolicitarFeriasRequest>({
+        nome: "",
+        email: "",
+        setor: "",
+        dataInicio: "",
+        quantidadeDias: "SETE_DIAS"
+    });
 
-
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-
+        const realTaskId = await InstanceService.getTaskId(instanceId);
+        await InstanceService.submitForm(realTaskId, formData);
         console.log("Dados enviados!");
         onClose();
     };
@@ -25,27 +32,26 @@ export default function FormRequest({isOpen, onClose, title, instanceId}: ModalP
                 <div className="modal-content">
                     <h2>Solicitação de Férias</h2>
                     <form onSubmit={handleSubmit}>
-                        {title}
                         <div className="form-group">
                             <label>Nome completo:</label>
-                            <input type="text"/>
+                            <input type="text" value={formData.nome} onChange={(e) => setFormData({...formData, nome: e.target.value})}/>
                         </div>
                         <div className="form-group">
                             <label>Email:</label>
-                            <input type="text"/>
+                            <input type="email" value= {formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})}/>
                         </div>
                         <div className="form-group">
                             <label>Setor:</label>
-                            <input type="text"/>
+                            <input type="text" value={formData.setor} onChange={(e) => setFormData({...formData, setor: e.target.value})}/>
                         </div>
                         <div className="form-group">
                             <label>Data de Início:</label>
-                            <input type="date" required />
+                            <input type="date" required  value={formData.dataInicio} onChange={(e) => setFormData({...formData, dataInicio: e.target.value})}/>
                         </div>
 
                         <div className="form-group">
                             <label>Quantidade de Dias:</label>
-                            <select name="quantidade-dias">
+                            <select name="quantidade-dias" value={formData.quantidadeDias} onChange={(e) => setFormData({...formData, quantidadeDias: e.target.value})}>
                                 <option value="SETE_DIAS">7 dias</option>
                                 <option value="QUINZE_DIAS">15 dias</option>
                                 <option value="TRINTA_DIAS">30 dias</option>

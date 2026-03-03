@@ -11,6 +11,8 @@ function App() {
          const data = await InstanceService.startInstance();
          setInstanceId(data.id);
          console.log(data.id);
+         const realTaskId = await InstanceService.getTaskId(data.id);
+         InstanceService.claimTask(realTaskId, "admin");
          setOpenModal(true);
     }
 
@@ -21,7 +23,7 @@ function App() {
               isOpen={openModal}
               instanceId = {instanceId}
               onClose={()=>{setOpenModal(false)}}
-              title={'processo iniciado'}
+              title={'processo iniciado:' + instanceId}
           />
       </div>
       <h1>Iniciar pedido de férias</h1>
