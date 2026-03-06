@@ -35,6 +35,7 @@
 
 .card {
   padding: 2em;
+
 }
 
 .read-the-docs {
@@ -42,7 +43,6 @@
 }
 
 
-/* Fundo escurecido que ocupa a tela toda */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -51,20 +51,21 @@
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center;     /* Centraliza verticalmente */
+    justify-content: center;
+    align-items: center;
     z-index: 1000;
 }
 
-/* Caixa branca do formulário */
+
 .modal-content {
     background: white;
     padding: 2rem;
-    border-radius: 8px;
+    border-radius: 10px;
     width: 90%;
     max-width: 500px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     color: #333;
+    opacity: 0.95;
 }
 
 .form-group {
@@ -93,7 +94,7 @@
 }
 
 .btn-cancel {
-    background: #ccc;
+    background: #7f0707;
     border: none;
     padding: 10px 20px;
     border-radius: 4px;
@@ -107,4 +108,47 @@
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.btn-submit-reprovado {
+    background: #7f0707;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 12;
+}
+
+.btn-submit-aprovado {
+    background: #1c7305;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 12;
+}
+
+.title-div {
+    background: rgba(0, 123, 255, 0.63);
+    color: white;
+    border: none;
+    padding: 1px 2px;
+    border-radius: 15px;
+}
+
+.start-1{
+    background: #1a8fcf;
+    color: #ffffff;
+}
+
+.task{
+    background: rgba(40, 143, 244, 0.81);
+    box-shadow: 3px 3px 2px lightblue;
+    border: none;
+}
+
+.btn-task{
+    background: rgba(13, 1, 96, 0.77);
 }

@@ -1,39 +1,18 @@
-import './App.css'
-import { InstanceService } from "./services/instanceService";
-import FormRequest from "./components/FormRequest.tsx"
-import { useState } from "react";
+
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {HomePage} from "./modules/home";
+import {Tasklist} from "./modules/tasklist";
 
 function App() {
-    const [openModal, setOpenModal] = useState(false);
-    const [instanceId, setInstanceId] = useState("")
-
-    async function startProcess() {
-         const data = await InstanceService.startInstance();
-         setInstanceId(data.id);
-         console.log(data.id);
-         const realTaskId = await InstanceService.getTaskId(data.id);
-         InstanceService.claimTask(realTaskId, "admin");
-         setOpenModal(true);
-    }
 
     return (
-    <>
-      <div>
-          <FormRequest
-              isOpen={openModal}
-              instanceId = {instanceId}
-              onClose={()=>{setOpenModal(false)}}
-              title={'processo iniciado:' + instanceId}
-          />
-      </div>
-      <h1>Iniciar pedido de férias</h1>
-      <div className="card">
-        <button onClick = {startProcess}>
-          Start
-        </button>
-      </div>
-    </>
-  )
+    <BrowserRouter>
+        <Routes>
+            <Route path ="/" element={<HomePage />} />
+            <Route path="/tasklist" element={<Tasklist />} />
+        </Routes>
+    </BrowserRouter>
+        )
 }
 
 export default App

@@ -67,8 +67,8 @@ public class EnviarNotificacaoWorker {
                     try {
                         LOGGER.info("Processo: " + externalTask.getProcessInstanceId());
 
-                        Date data = externalTask.getVariable("data_ferias");
-                        String dataFormatada = data.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                        String data = externalTask.getVariable("data_ferias");
+                        String dataFormatada = LocalDate.parse(data).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
                         notificacaoService.enviarEmailAprovado(externalTask.getVariable("email"), dataFormatada,  externalTask.getVariable("obs"));
 

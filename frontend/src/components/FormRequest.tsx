@@ -30,19 +30,19 @@ export default function FormRequest({isOpen, onClose, instanceId}: ModalProps){
         isOpen ?
             <div className="modal-overlay">
                 <div className="modal-content">
-                    <h2>Solicitação de Férias</h2>
-                    <form onSubmit={handleSubmit}>
+                    <div className="title-div"><h2>Solicitação de Férias</h2></div>
+                    <form onSubmit={handleSubmit}>F
                         <div className="form-group">
                             <label>Nome completo:</label>
-                            <input type="text" value={formData.nome} onChange={(e) => setFormData({...formData, nome: e.target.value})}/>
+                            <input type="text" value={formData.nome} onChange={(e) => setFormData({...formData, nome: e.target.value})} required={true}/>
                         </div>
                         <div className="form-group">
                             <label>Email:</label>
-                            <input type="email" value= {formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})}/>
+                            <input type="email" value= {formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required={true}/>
                         </div>
                         <div className="form-group">
                             <label>Setor:</label>
-                            <input type="text" value={formData.setor} onChange={(e) => setFormData({...formData, setor: e.target.value})}/>
+                            <input type="text" value={formData.setor} onChange={(e) => setFormData({...formData, setor: e.target.value})} required={true}/>
                         </div>
                         <div className="form-group">
                             <label>Data de Início:</label>

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Service
@@ -27,10 +28,9 @@ public class GravarFeriasService {
 
         String nome = execution.getVariable("nome").toString();
 
-        Date data = (Date) execution.getVariable("data_ferias");
-        LocalDate dataFormatadaInicial = data.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
+        String data = execution.getVariable("data_ferias").toString();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dataFormatadaInicial = LocalDate.parse(data, formatter);
 
         TempoFeriasEnum tempo = TempoFeriasEnum.valueOf((String) execution.getVariable("tempo_ferias"));
 
