@@ -48,7 +48,6 @@ export const InstanceService = {
     },
 
     submitForm: async (id: string, request: SolicitarFeriasRequest) => {
-        //const dataFormatada = request.dataInicio.split('-').reverse().join('/');
         try {
             const payload = {
                 variables: {
@@ -60,6 +59,7 @@ export const InstanceService = {
                 }
             }
             const response = await api.post(`/engine-rest/task/${id}/complete`, payload)
+            alert("Solicitação de férias enviada com sucesso!");
             return response.data;
         } catch (e) {
             console.error("Erro ao enviar formulario:", e);

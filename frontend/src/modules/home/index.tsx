@@ -5,14 +5,15 @@ import {useState} from "react";
 
 export const HomePage: React.FC = () => {
     const [openModal, setOpenModal] = useState(false);
-    const [instanceId, setInstanceId] = useState("")
+    const [instanceId, setInstanceId] = useState("");
+    const user = "admin"
 
     async function startProcess() {
         const data = await InstanceService.startInstance();
         setInstanceId(data.id);
         console.log(data.id);
         const realTaskId = await InstanceService.getTaskId(data.id);
-        InstanceService.claimTask(realTaskId, "admin");
+        InstanceService.claimTask(realTaskId, user);
         setOpenModal(true);
     }
 

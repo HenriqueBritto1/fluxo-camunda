@@ -3,13 +3,12 @@ import {useEffect, useState} from "react";
 import {InstanceService} from "../../services/instanceService.tsx";
 import FormValidate from "../../components/FormValidate.tsx";
 
-
 export const Tasklist: React.FC = () => {
     const [availableTasks, setAvailableTasks] = useState<CamundaTask[]>([]);
     const [myTasks, setMyTasks] = useState<CamundaTask[]>([]);
     const [openModal, setOpenModal] = useState(false)
     const [selectedInstanceId, setSelectedInstanceId] = useState<string | null>(null);
-    const user = "hbritto"
+    const user = "admin";
 
     async function loadTask(){
         try {
@@ -45,9 +44,9 @@ export const Tasklist: React.FC = () => {
                     <h1>Tasklist Custom</h1>
                 </div>
 
-                <h2>Tarefas Disponíveis</h2>
+                <h2 style={{color: "#032A28"}}>Tarefas Disponíveis</h2>
                 {availableTasks.map(task => (
-                    <div key={task.id} className="task" style={{ margin: 10, padding: 10 , borderRadius: 20, color: "white"}}>
+                    <div key={task.id} className="task" >
                         <p><strong>{task.name}</strong></p>
                         <button className="btn-task" onClick={() => handleClaim(task.id)}>
                             Claim
@@ -55,11 +54,11 @@ export const Tasklist: React.FC = () => {
                     </div>
                 ))}
 
-                <h2>Minhas Tarefas</h2>
+                <h2 style={{color: "#032A28"}}>Minhas Tarefas</h2>
                 {myTasks.map(task => (
-                    <div key={task.id} className="task" style={{ margin: 10, padding: 10 , borderRadius: 20, color: "white"}}>
+                    <div key={task.id} className="task" >
                         <p><strong>{task.name}</strong></p>
-                        <button className="btn-task" onClick={() => {
+                        <button className="btn-task"  onClick={() => {
                             openRequest(task.processInstanceId)
                             setSelectedInstanceId(task.processInstanceId);
                         }}>Validar</button>

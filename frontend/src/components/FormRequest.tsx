@@ -31,7 +31,7 @@ export default function FormRequest({isOpen, onClose, instanceId}: ModalProps){
             <div className="modal-overlay">
                 <div className="modal-content">
                     <div className="title-div"><h2>Solicitação de Férias</h2></div>
-                    <form onSubmit={handleSubmit}>F
+                    <form onSubmit={handleSubmit}>
                         <div className="form-group">
                             <label>Nome completo:</label>
                             <input type="text" value={formData.nome} onChange={(e) => setFormData({...formData, nome: e.target.value})} required={true}/>
