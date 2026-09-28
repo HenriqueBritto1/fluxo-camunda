@@ -1,116 +1,124 @@
-import {type FormEvent, useEffect, useState} from "react";
-import {InstanceService, type ValidarFeriasRequest} from "../services/instanceService.tsx";
-import type {CamundaTask} from "../types/task.ts";
+import { useEffect, useState } from "react";
+import { ProcessoFeriasService, type ValidacaoFeriasDados } from "../services/instanceService.tsx";
 
-interface ModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    title?: string;
-    //children: ReactNode;
-    instanceId: string;
-    loadTasks: () => void;
+interface ValidacaoFeriasModalProps {
+    isModalVisible: boolean;
+    fecharModal: () => void;
+    instanciaProcessoId: string;
+    recarregarTarefas: () => void;
 }
 
-export default function FormValidate({isOpen, onClose, instanceId, loadTasks}: ModalProps) {
-    const [formData, setFormData] = useState<ValidarFeriasRequest>({
+const TEMPO_FERIAS_PADRAO = "SETE_DIAS";
+
+export default function FormValidate({ isModalVisible, fecharModal, instanciaProcessoId, recarregarTarefas }: ValidacaoFeriasModalProps) {
+    const [dadosValidacao, setDadosValidacao] = useState<ValidacaoFeriasDados>({
         nome: "",
         dataInicio: "",
-        quantidadeDias: "SETE_DIAS",
+        quantidadeDias: TEMPO_FERIAS_PADRAO,
         aprovado: false,
-        obs: ""
-    })
+        observacaoGestor: ""
+    });
 
-    function extractValues(variables: any) {
-        const result: any = {};
-
-        for (const key in variables) {
-            result[key] = variables[key]?.value;
-        }
-
-        return result;
-    }
-
-    async function handleOpen(task: CamundaTask) {
-        const vars = await InstanceService.getVariables(task.processInstanceId);
-        const extractedVars = extractValues(vars);
-
-        setFormData({
-            nome: extractedVars.nome || "",
-            dataInicio: extractedVars.data_ferias || "",
-            quantidadeDias: extractedVars.tempo_ferias || "SETE_DIAS",
-            aprovado: false,
-            obs: extractedVars.obs || ""
-        })
-    }
-
-    const handleDecision = async (aprovadoValue: boolean) => {
+    const carregarDadosDoProcesso = async (instanciaId: string) => {
         try {
-            const realTaskId = await InstanceService.getTaskId(instanceId);
-
-            await InstanceService.submitValid(realTaskId, {
-                ...formData,
-                aprovado: aprovadoValue
+            const variaveis = await ProcessoFeriasService.obterVariaveisDoProcesso(instanciaId);
+            setDadosValidacao({
+                nome: variaveis.nome || "",
+                dataInicio: variaveis.data_ferias || "",
+                quantidadeDias: variaveis.tempo_ferias || TEMPO_FERIAS_PADRAO,
+                aprovado: false,
+                observacaoGestor: variaveis.obs || ""
             });
-
-            loadTasks();
-            console.log("Validação enviada!");
-            onClose();
-        } catch (error) {
-            console.error("Erro ao enviar:", error);
+        } catch (erro) {
+            console.error("Erro ao carregar dados:", erro);
         }
     };
 
     useEffect(() => {
-        if (isOpen && instanceId) {
-            handleOpen({ processInstanceId: instanceId } as CamundaTask);
+        if (isModalVisible && instanciaProcessoId) {
+            carregarDadosDoProcesso(instanciaProcessoId);
         }
-    }, [isOpen, instanceId]);
+    }, [isModalVisible, instanciaProcessoId]);
 
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        const realTaskId = await InstanceService.getTaskId(instanceId);
-
-        await InstanceService.submitValid(realTaskId, formData);
-
-        onClose();
+    const executarDecisao = async (isAprovado: boolean) => {
+        try {
+            const tarefaId = await ProcessoFeriasService.obterTarefaAtivaId(instanciaProcessoId);
+            
+            const dadosParaEnviar = {
+                ...dadosValidacao,
+                aprovado: isAprovado
+            };
+            
+            await ProcessoFeriasService.enviarValidacaoFerias(tarefaId, dadosParaEnviar);
+            
+            recarregarTarefas();
+            alert("Validação enviada com sucesso!");
+            fecharModal();
+        } catch (erro) {
+            console.error("Erro ao enviar validação:", erro);
+            alert("Falha ao enviar validação.");
+        }
     };
 
-    return(
-        isOpen ?
-            <div className="modal-overlay" onClick={onClose}>
-                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                    <div className="title-div"><h2>Validação de solicitação de férias</h2></div>
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label>Nome completo:</label>
-                            <input type="text" value={formData.nome} onChange={(e) => setFormData({...formData, nome: e.target.value})} readOnly={true}/>
-                        </div>
-                        <div className="form-group">
-                            <label>Data de Início:</label>
-                            <input type="date" required  value={formData.dataInicio} onChange={(e) => setFormData({...formData, dataInicio: e.target.value})} readOnly={true}/>
-                        </div>
+    if (!isModalVisible) return null;
 
-                        <div className="form-group">
-                            <label>Quantidade de Dias:</label>
-                            <input name="quantidade-dias" value={formData.quantidadeDias} onChange={(e) => setFormData({...formData, quantidadeDias: e.target.value})} readOnly={true}/>
-                        </div>
-                        <div className="form-group">
-                            <label>Observação:</label>
-                            <input type="text" value={formData.obs} onChange={(e) => setFormData({...formData, obs: e.target.value})}/>
-                        </div>
-
-                        <div className="modal-actions">
-                            <button type="button" className="btn-submit-reprovado" onClick={() => handleDecision(false)}>
-                                Reprovar
-                            </button>
-                            <button type="button" className="btn-submit-aprovado" onClick={() => handleDecision(true)}>
-                                Aprovar
-                            </button>
-                        </div>
-                    </form>
+    return (
+        <div className="modal-overlay" onClick={fecharModal}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="title-div">
+                    <h2>Validação de Solicitação de Férias</h2>
                 </div>
-            </div>
-            : null
-    );
+                <form onSubmit={(e) => e.preventDefault()}>
+                    <div className="form-group">
+                        <label>Nome completo:</label>
+                        <input 
+                            type="text" 
+                            value={dadosValidacao.nome} 
+                            readOnly 
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Data de Início:</label>
+                        <input 
+                            type="date" 
+                            value={dadosValidacao.dataInicio} 
+                            readOnly 
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Quantidade de Dias:</label>
+                        <input 
+                            value={dadosValidacao.quantidadeDias} 
+                            readOnly 
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Observação do Gestor:</label>
+                        <input 
+                            type="text" 
+                            value={dadosValidacao.observacaoGestor} 
+                            onChange={(e) => setDadosValidacao({ ...dadosValidacao, observacaoGestor: e.target.value })} 
+                        />
+                    </div>
 
+                    <div className="modal-actions">
+                        <button 
+                            type="button" 
+                            className="btn-submit-reprovado" 
+                            onClick={() => executarDecisao(false)}
+                        >
+                            Reprovar
+                        </button>
+                        <button 
+                            type="button" 
+                            className="btn-submit-aprovado" 
+                            onClick={() => executarDecisao(true)}
+                        >
+                            Aprovar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
 }

@@ -1,62 +1,55 @@
 package com.br.fluxo.pedidoferias.service;
 
-import org.camunda.bpm.engine.ExternalTaskService;
-import org.camunda.bpm.engine.externaltask.ExternalTask;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.Date;
-
 @Service
 public class EnviarNotificacaoService {
 
-    private final ExternalTaskService externalTaskService;
+    private final JavaMailSender mailSender;
 
     @Value("${spring.mail.username}")
-    private String username;
+    private String emailRemetente;
 
-    private JavaMailSender mailSender;
-
-    public EnviarNotificacaoService(JavaMailSender mailSender, ExternalTaskService externalTaskService) {
+    public EnviarNotificacaoService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
-        this.externalTaskService = externalTaskService;
     }
 
-    public void enviarEmailReprovado(String to, String observacao) {
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        String mensagem = """
-                Olá, Prezado(a),
-                sua solicitação de férias foi negada! Entre em contato com seu gestor.
-                
-                Observação:
-                """ + observacao;
-
-        mailMessage.setTo(to);
-        mailMessage.setSubject("Solicitação de férias negada");
-        mailMessage.setText(mensagem);
-        mailMessage.setFrom(username);
-        mailSender.send(mailMessage);
+    public void enviarEmailReprovado(String emailDestinatario, String observacaoGestor) {
+        String assunto = "Solicitação de férias negada";
+        String mensagem = montarMensagemReprovacao(observacaoGestor);
+        
+        enviarEmail(emailDestinatario, assunto, mensagem);
     }
 
-    public void enviarEmailAprovado(String to, String data, String observacao) {
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
+    public void enviarEmailAprovado(String emailDestinatario, String dataInicioFerias, String observacaoGestor) {
+        String assunto = "Férias aprovadas!";
+        String mensagem = montarMensagemAprovacao(dataInicioFerias, observacaoGestor);
 
-        String mensagem = """
-                Olá, Prezado(a),
-                sua solicitação de férias foi aprovada!
-                Terá inicio dia:
-                """ + data +
-                """
-                \n\nObservação:
-                """ + observacao;
-        mailMessage.setTo(to);
-        mailMessage.setSubject("Férias aprovadas!");
-        mailMessage.setText(mensagem);
-        mailMessage.setFrom(username);
+        enviarEmail(emailDestinatario, assunto, mensagem);
+    }
+
+    private String montarMensagemReprovacao(String observacaoGestor) {
+        return "Olá, Prezado(a),\n" +
+               "sua solicitação de férias foi negada! Entre em contato com seu gestor.\n\n" +
+               "Observação:\n" + observacaoGestor;
+    }
+
+    private String montarMensagemAprovacao(String dataInicioFerias, String observacaoGestor) {
+        return "Olá, Prezado(a),\n" +
+               "sua solicitação de férias foi aprovada!\n" +
+               "Terá início dia: " + dataInicioFerias + "\n\n" +
+               "Observação:\n" + observacaoGestor;
+    }
+
+    private void enviarEmail(String destinatario, String assunto, String textoMensagem) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(destinatario);
+        mailMessage.setSubject(assunto);
+        mailMessage.setText(textoMensagem);
+        mailMessage.setFrom(emailRemetente);
         mailSender.send(mailMessage);
     }
 }

@@ -1,0 +1,22 @@
+services:
+  postgres:
+    env_file:
+      - .env
+    container_name: postgres-fluxo
+    image: bitnami/postgresql
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRESQL_USERNAME=${POSTGRES_USER}
+      - POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRESQL_DATABASE=postgres
+    volumes:
+      - pg_fluxo:/bitnami/postgresql/
+    networks:
+      - fluxo
+
+volumes:
+  pg_fluxo:
+
+networks:
+  fluxo:

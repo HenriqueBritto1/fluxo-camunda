@@ -1,82 +1,88 @@
-import type {CamundaTask} from "../../types/task.ts";
-import {useEffect, useState} from "react";
-import {InstanceService} from "../../services/instanceService.tsx";
+import type { CamundaTask } from "../../types/task.ts";
+import { useEffect, useState } from "react";
+import { ProcessoFeriasService } from "../../services/instanceService.tsx";
 import FormValidate from "../../components/FormValidate.tsx";
 
+const GRUPO_GESTOR = "gestor";
+const USUARIO_GESTOR = "admin";
+
 export const Tasklist: React.FC = () => {
-    const [availableTasks, setAvailableTasks] = useState<CamundaTask[]>([]);
-    const [myTasks, setMyTasks] = useState<CamundaTask[]>([]);
-    const [openModal, setOpenModal] = useState(false)
-    const [selectedInstanceId, setSelectedInstanceId] = useState<string | null>(null);
-    const user = "admin";
+    const [tarefasDisponiveis, setTarefasDisponiveis] = useState<CamundaTask[]>([]);
+    const [minhasTarefas, setMinhasTarefas] = useState<CamundaTask[]>([]);
+    const [isModalVisivel, setIsModalVisivel] = useState(false);
+    const [instanciaSelecionadaId, setInstanciaSelecionadaId] = useState<string>("");
 
-    async function loadTask(){
+    const carregarTarefas = async () => {
         try {
-            const available = await InstanceService.getTasksList("gestor");
-            const myTasks = await InstanceService.getMyTasks(user);
+            const disponíveis = await ProcessoFeriasService.buscarTarefasDisponiveisPorGrupo(GRUPO_GESTOR);
+            const atribuidas = await ProcessoFeriasService.buscarTarefasAtribuidas(USUARIO_GESTOR);
 
-            setAvailableTasks(available);
-            setMyTasks(myTasks);
-        }catch (e) {
-            console.error(e);
+            setTarefasDisponiveis(disponíveis);
+            setMinhasTarefas(atribuidas);
+        } catch (erro) {
+            console.error("Erro ao carregar tarefas:", erro);
         }
-    }
+    };
 
-    async function handleClaim(taskId: string) {
-        await InstanceService.claimTask(taskId, user);
-        await loadTask();
-    }
+    const assumirTarefa = async (tarefaId: string) => {
+        try {
+            await ProcessoFeriasService.atribuirTarefa(tarefaId, USUARIO_GESTOR);
+            await carregarTarefas();
+        } catch (erro) {
+            console.error("Erro ao assumir tarefa:", erro);
+            alert("Não foi possível assumir a tarefa.");
+        }
+    };
 
-    async function openRequest (taskId: string){
-        await InstanceService.getTaskId(taskId)
-        setOpenModal(true);
-    }
+    const abrirModalDeValidacao = (instanciaProcessoId: string) => {
+        setInstanciaSelecionadaId(instanciaProcessoId);
+        setIsModalVisivel(true);
+    };
 
     useEffect(() => {
-        loadTask();
-    }, [user]);
+        carregarTarefas();
+    }, []);
 
-    return(
+    return (
         <>
-
             <div style={{ padding: 20 }}>
-                <div className="title-div" style={{padding: 10}}>
-                    <h1>Tasklist Custom</h1>
+                <div className="title-div" style={{ padding: 10 }}>
+                    <h1>Tasklist Customizada</h1>
                 </div>
 
-                <h2 style={{color: "#032A28"}}>Tarefas Disponíveis</h2>
-                {availableTasks.map(task => (
-                    <div key={task.id} className="task" >
-                        <p><strong>{task.name}</strong></p>
-                        <button className="btn-task" onClick={() => handleClaim(task.id)}>
+                <h2 style={{ color: "#032A28" }}>Tarefas Disponíveis</h2>
+                {tarefasDisponiveis.map(tarefa => (
+                    <div key={tarefa.id} className="task">
+                        <p><strong>{tarefa.name}</strong></p>
+                        <button className="btn-task" onClick={() => assumirTarefa(tarefa.id)}>
                             Claim
                         </button>
                     </div>
                 ))}
 
-                <h2 style={{color: "#032A28"}}>Minhas Tarefas</h2>
-                {myTasks.map(task => (
-                    <div key={task.id} className="task" >
-                        <p><strong>{task.name}</strong></p>
-                        <button className="btn-task"  onClick={() => {
-                            openRequest(task.processInstanceId)
-                            setSelectedInstanceId(task.processInstanceId);
-                        }}>Validar</button>
-
+                <h2 style={{ color: "#032A28" }}>Minhas Tarefas</h2>
+                {minhasTarefas.map(tarefa => (
+                    <div key={tarefa.id} className="task">
+                        <p><strong>{tarefa.name}</strong></p>
+                        <button 
+                            className="btn-task" 
+                            onClick={() => abrirModalDeValidacao(tarefa.processInstanceId)}
+                        >
+                            Validar
+                        </button>
                     </div>
                 ))}
+                
                 <FormValidate
-                    isOpen={openModal}
-                    instanceId={selectedInstanceId!}
-                    onClose={() => {
-                        setOpenModal(false)
-                        setSelectedInstanceId(null);
+                    isModalVisible={isModalVisivel}
+                    instanciaProcessoId={instanciaSelecionadaId}
+                    fecharModal={() => {
+                        setIsModalVisivel(false);
+                        setInstanciaSelecionadaId("");
                     }}
-                    loadTasks={loadTask}
-                    title={'processo: ' + selectedInstanceId}
+                    recarregarTarefas={carregarTarefas}
                 />
             </div>
-
         </>
-    )
-}
+    );
+};

@@ -1,39 +1,46 @@
 import '../../App.css'
-import {InstanceService} from "../../services/instanceService";
+import { ProcessoFeriasService } from "../../services/instanceService.tsx";
 import FormRequest from '../../components/FormRequest.tsx'
-import {useState} from "react";
+import { useState } from "react";
+
+const USUARIO_SISTEMA = "admin";
 
 export const HomePage: React.FC = () => {
-    const [openModal, setOpenModal] = useState(false);
-    const [instanceId, setInstanceId] = useState("");
-    const user = "admin"
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [instanciaProcessoId, setInstanciaProcessoId] = useState("");
 
-    async function startProcess() {
-        const data = await InstanceService.startInstance();
-        setInstanceId(data.id);
-        console.log(data.id);
-        const realTaskId = await InstanceService.getTaskId(data.id);
-        InstanceService.claimTask(realTaskId, user);
-        setOpenModal(true);
-    }
+    const iniciarProcesso = async () => {
+        try {
+            const instanciaId = await ProcessoFeriasService.iniciarProcessoDeFerias();
+            setInstanciaProcessoId(instanciaId);
+            
+            const tarefaAtivaId = await ProcessoFeriasService.obterTarefaAtivaId(instanciaId);
+            await ProcessoFeriasService.atribuirTarefa(tarefaAtivaId, USUARIO_SISTEMA);
+            
+            setIsModalVisible(true);
+        } catch (erro) {
+            console.error("Erro no fluxo de inicialização:", erro);
+            alert("Não foi possível iniciar o pedido de férias.");
+        }
+    };
 
     return (
         <>
             <div>
                 <FormRequest
-                    isOpen={openModal}
-                    instanceId={instanceId}
-                    onClose={() => {
-                        setOpenModal(false)
-                    }}
+                    isModalVisible={isModalVisible}
+                    instanciaProcessoId={instanciaProcessoId}
+                    fecharModal={() => setIsModalVisible(false)}
                 />
             </div>
-            <div className="title-div" style={{padding: 10}}><h1>Iniciar pedido de férias</h1></div>
+            <div className="title-div" style={{ padding: 10 }}>
+                <h1>Iniciar Pedido de Férias</h1>
+            </div>
             <div className="card">
-                <button onClick={startProcess} className="start-1">
+                <button onClick={iniciarProcesso} className="start-1">
                     Start
                 </button>
             </div>
         </>
-    )
-}
+    );
+};

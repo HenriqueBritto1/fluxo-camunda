@@ -1,117 +1,104 @@
-import {api} from "./Api.tsx";
+import { api } from "./Api.tsx";
 
-export interface SolicitarFeriasRequest {
-    nome: string
+export interface SolicitacaoFeriasDados {
+    nome: string;
     dataInicio: string;
     quantidadeDias: string;
     setor: string;
     email: string;
 }
 
-export interface ValidarFeriasRequest {
-    nome: string
-    dataInicio: string
-    quantidadeDias: string
-    aprovado: boolean
-    obs: string
+export interface ValidacaoFeriasDados {
+    nome: string;
+    dataInicio: string;
+    quantidadeDias: string;
+    aprovado: boolean;
+    observacaoGestor: string;
 }
 
-export const InstanceService = {
-    startInstance: async () => {
-        try {
-            const response = await api.post("/engine-rest/process-definition/key/fluxo-process/start", {})
-            return response.data;
-        } catch (e) {
-            console.error("Erro ao iniciar processo:", e);
-            alert("Falha ao iniciar pedido.");
-        }
-    },
+const CAMUNDA_BASE_PATH = "/engine-rest";
+const PROCESS_KEY = "fluxo-process";
 
-    closeInstance: async (id: string) => {
-        try {
-            const response = await api.delete(`/engine-rest/process-instance/${id}`)
-            return response.data;
-        } catch (e) {
-            console.error("Erro ao cancelar processo:", e);
-            throw e;
-        }
-    },
-
-    claimTask: async (id: string, user: string) => {
-        try {
-            const response = await api.post(`/engine-rest/task/${id}/claim`, {userId: user})
-            return response.data;
-        } catch (e) {
-            console.error("Erro ao dar assignment para a task:", e);
-            throw e;
-        }
-    },
-
-    submitForm: async (id: string, request: SolicitarFeriasRequest) => {
-        try {
-            const payload = {
-                variables: {
-                    nome: {value: request.nome, type: "String"},
-                    data_ferias: {value: request.dataInicio, type: "String"},
-                    tempo_ferias: {value: request.quantidadeDias, type: "String"},
-                    setor: {value: request.setor, type: "String"},
-                    email: {value: request.email, type: "String"}
-                }
-            }
-            const response = await api.post(`/engine-rest/task/${id}/complete`, payload)
-            alert("Solicitação de férias enviada com sucesso!");
-            return response.data;
-        } catch (e) {
-            console.error("Erro ao enviar formulario:", e);
-            throw e;
-        }
-    },
-
-    getTaskId: async (processInstanceId: string): Promise<string> => {
-        try {
-            const response = await api.get(`/engine-rest/task?processInstanceId=${processInstanceId}`);
-
-            if (response.data && response.data.length > 0) {
-                return response.data[0].id;
-            } else {
-                throw new Error("Nenhuma tarefa ativa encontrada para esta instância.");
-            }
-        } catch (error) {
-            console.error("Erro ao buscar Task ID:", error);
-            throw error;
-        }
-    },
-    getTasksList: async (user: string) => {
-        const response = await api.get(`/engine-rest/task?candidateGroup=${user}`)
-        return response.data;
-    },
-
-    getMyTasks: async (user: string) => {
-        const response = await api.get(`/engine-rest/task?assignee=${user}`)
-        return response.data;
-    },
-
-    submitValid: async (id: string, request: ValidarFeriasRequest) => {
-        try {
-            const payload = {
-                variables: {
-                    nome: {value: request.nome, type: "String"},
-                    data_ferias: {value: request.dataInicio, type: "String"},
-                    tempo_ferias: {value: request.quantidadeDias, type: "String"},
-                    aprovado: {value: request.aprovado, type: "Boolean"},
-                    obs: {value: request.obs, type: "String"}
-                }
-            }
-            const response = await api.post(`/engine-rest/task/${id}/complete`, payload)
-            return response.data;
-        } catch (e) {
-            console.error("Erro ao enviar formulario:", e);
-            throw e;
-        }
-    },
-
-    getVariables: async (instanceId: string) => {
-        const response = await api.get(`/engine-rest/process-instance/${instanceId}/variables`)
-        return response.data;
+const mapearParaVariaveisCamunda = (dados: any) => {
+    const variaveis: Record<string, any> = {};
+    for (const key in dados) {
+        let type = "String";
+        if (typeof dados[key] === "boolean") type = "Boolean";
+        else if (typeof dados[key] === "number") type = "Integer";
+        
+        variaveis[key] = { value: dados[key], type };
     }
-}
+    return variaveis;
+};
+
+const mapearDeVariaveisCamunda = (variaveis: Record<string, any>) => {
+    const resultado: Record<string, any> = {};
+    for (const key in variaveis) {
+        resultado[key] = variaveis[key]?.value;
+    }
+    return resultado;
+};
+
+export const ProcessoFeriasService = {
+    iniciarProcessoDeFerias: async (): Promise<string> => {
+        const response = await api.post(`${CAMUNDA_BASE_PATH}/process-definition/key/${PROCESS_KEY}/start`, {});
+        return response.data.id;
+    },
+
+    cancelarProcessoDeFerias: async (instanciaId: string): Promise<void> => {
+        await api.delete(`${CAMUNDA_BASE_PATH}/process-instance/${instanciaId}`);
+    },
+
+    atribuirTarefa: async (tarefaId: string, usuarioId: string): Promise<void> => {
+        await api.post(`${CAMUNDA_BASE_PATH}/task/${tarefaId}/claim`, { userId: usuarioId });
+    },
+
+    enviarFormularioSolicitacao: async (tarefaId: string, dadosSolicitacao: SolicitacaoFeriasDados): Promise<void> => {
+        const payload = {
+            variables: mapearParaVariaveisCamunda({
+                nome: dadosSolicitacao.nome,
+                data_ferias: dadosSolicitacao.dataInicio,
+                tempo_ferias: dadosSolicitacao.quantidadeDias,
+                setor: dadosSolicitacao.setor,
+                email: dadosSolicitacao.email
+            })
+        };
+        await api.post(`${CAMUNDA_BASE_PATH}/task/${tarefaId}/complete`, payload);
+    },
+
+    obterTarefaAtivaId: async (instanciaProcessoId: string): Promise<string> => {
+        const response = await api.get(`${CAMUNDA_BASE_PATH}/task?processInstanceId=${instanciaProcessoId}`);
+        if (response.data && response.data.length > 0) {
+            return response.data[0].id;
+        }
+        throw new Error("Nenhuma tarefa ativa encontrada para esta instância.");
+    },
+
+    buscarTarefasDisponiveisPorGrupo: async (grupoCandidato: string) => {
+        const response = await api.get(`${CAMUNDA_BASE_PATH}/task?candidateGroup=${grupoCandidato}`);
+        return response.data;
+    },
+
+    buscarTarefasAtribuidas: async (usuarioResponsavel: string) => {
+        const response = await api.get(`${CAMUNDA_BASE_PATH}/task?assignee=${usuarioResponsavel}`);
+        return response.data;
+    },
+
+    enviarValidacaoFerias: async (tarefaId: string, dadosValidacao: ValidacaoFeriasDados): Promise<void> => {
+        const payload = {
+            variables: mapearParaVariaveisCamunda({
+                nome: dadosValidacao.nome,
+                data_ferias: dadosValidacao.dataInicio,
+                tempo_ferias: dadosValidacao.quantidadeDias,
+                aprovado: dadosValidacao.aprovado,
+                obs: dadosValidacao.observacaoGestor
+            })
+        };
+        await api.post(`${CAMUNDA_BASE_PATH}/task/${tarefaId}/complete`, payload);
+    },
+
+    obterVariaveisDoProcesso: async (instanciaId: string): Promise<Record<string, any>> => {
+        const response = await api.get(`${CAMUNDA_BASE_PATH}/process-instance/${instanciaId}/variables`);
+        return mapearDeVariaveisCamunda(response.data);
+    }
+};

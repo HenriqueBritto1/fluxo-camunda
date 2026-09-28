@@ -12,20 +12,23 @@ import java.util.logging.Logger;
 @Component
 public class GravarFerias implements JavaDelegate {
 
-    @Autowired
-    private GravarFeriasService service;
+    private final GravarFeriasService gravarFeriasService;
+    private static final Logger LOGGER = Logger.getLogger(GravarFerias.class.getName());
 
-    private final static Logger LOGGER = Logger.getLogger(GravarFerias.class.getName());
+    @Autowired
+    public GravarFerias(GravarFeriasService gravarFeriasService) {
+        this.gravarFeriasService = gravarFeriasService;
+    }
 
     @Override
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execucaoDoProcesso) throws Exception {
 
-        Ferias ferias = service.getVariaveisFerias(execution);
+        LOGGER.info("Iniciando a extração dos dados de Férias.");
+        Ferias solicitacaoDeFerias = gravarFeriasService.extrairFeriasDaExecucao(execucaoDoProcesso);
 
-        LOGGER.info("Enviando Ferias");
+        LOGGER.info("Enviando solicitação de Férias para o banco de dados.");
+        gravarFeriasService.gravarFeriasDB(solicitacaoDeFerias);
 
-        service.gravarFeriasDB(ferias);
-
-        LOGGER.info("Ferias salvas com sucesso");
+        LOGGER.info("Férias salvas com sucesso no banco de dados.");
     }
 }
