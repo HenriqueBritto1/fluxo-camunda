@@ -1,0 +1,2681 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../style.css">
+</head>
+<body>
+
+
+<h1>EnviarNotificacaoWorker.java</h1>
+<!-- operadores:inicio -->
+<style>
+.operadores { background: #fff; color: #222; margin: 24px 0; }
+.operadores table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.operadores th, .operadores td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; vertical-align: top; }
+.operadores th { background: #eee; }
+.operadores .rolagem { overflow-x: auto; }
+.operadores .nota { color: #555; font-size: 12px; }
+.operadores .numero { text-align: right; white-space: nowrap; }
+.operadores code { white-space: nowrap; }
+.operadores .descricao { overflow-wrap: anywhere; min-width: 320px; }
+.operadores .total td { font-weight: bold; }
+.operadores .status { font-weight: bold; white-space: nowrap; }
+.operadores .status-detectado { color: #1b6e2c; }
+.operadores .status-sobreviveu { color: #b3261e; }
+.operadores .status-sem-cobertura { color: #8a5a00; }
+</style>
+<section class="operadores">
+<h2>Operadores de mutação</h2>
+<div class="rolagem"><table>
+<thead><tr><th>Operador</th><th>O que faz</th><th>Exemplo</th><th>Gerados</th><th>Mortos</th><th>Sobreviventes</th><th>Sem cobertura</th><th>Nota</th></tr></thead>
+<tbody>
+<tr><td><code>EXPERIMENTAL_ARGUMENT_PROPAGATION</code></td><td>Troca a chamada de um método por um dos seus argumentos de mesmo tipo do retorno.</td><td><code>x = ajustar(y);  →  x = y;</code></td><td class="numero">6</td><td class="numero">6</td><td class="numero">0</td><td class="numero">0</td><td class="numero">100%</td></tr>
+<tr><td><code>EMPTY_RETURNS</code></td><td>Faz o método retornar um valor vazio do seu tipo, como texto vazio ou lista vazia.</td><td><code>return nome;  →  return &quot;&quot;;</code></td><td class="numero">1</td><td class="numero">1</td><td class="numero">0</td><td class="numero">0</td><td class="numero">100%</td></tr>
+<tr><td><code>INLINE_CONSTS</code></td><td>Altera uma constante literal escrita no código.</td><td><code>10000  →  10001</code></td><td class="numero">5</td><td class="numero">5</td><td class="numero">0</td><td class="numero">0</td><td class="numero">100%</td></tr>
+<tr><td><code>MATH</code></td><td>Troca uma operação matemática por outra.</td><td><code>a - b  →  a + b</code></td><td class="numero">1</td><td class="numero">1</td><td class="numero">0</td><td class="numero">0</td><td class="numero">100%</td></tr>
+<tr><td><code>EXPERIMENTAL_MEMBER_VARIABLE</code></td><td>Remove a atribuição a um campo, que fica com o valor padrão.</td><td><code>this.servico = servico;  →  (removido)</code></td><td class="numero">2</td><td class="numero">2</td><td class="numero">0</td><td class="numero">0</td><td class="numero">100%</td></tr>
+<tr><td><code>EXPERIMENTAL_NAKED_RECEIVER</code></td><td>Troca a chamada de um método pelo próprio objeto que recebe a chamada.</td><td><code>builder.baseUrl(url)  →  builder</code></td><td class="numero">4</td><td class="numero">4</td><td class="numero">0</td><td class="numero">0</td><td class="numero">100%</td></tr>
+<tr><td><code>NEGATE_CONDITIONALS</code></td><td>Inverte uma condição.</td><td><code>a == b  →  a != b</code></td><td class="numero">4</td><td class="numero">4</td><td class="numero">0</td><td class="numero">0</td><td class="numero">100%</td></tr>
+<tr><td><code>NON_VOID_METHOD_CALLS</code></td><td>Remove a chamada a um método que retorna valor, usando o valor padrão do tipo (null, 0 ou false).</td><td><code>x = calcular();  →  x = null;</code></td><td class="numero">23</td><td class="numero">23</td><td class="numero">0</td><td class="numero">0</td><td class="numero">100%</td></tr>
+<tr><td><code>REMOVE_CONDITIONALS_EQUAL_ELSE</code></td><td>Remove uma verificação de igualdade, forçando sempre um dos caminhos da instrução.</td><td><code>if (a == b)  →  if (false)</code></td><td class="numero">4</td><td class="numero">4</td><td class="numero">0</td><td class="numero">0</td><td class="numero">100%</td></tr>
+<tr><td><code>REMOVE_CONDITIONALS_EQUAL_IF</code></td><td>Remove uma verificação de igualdade, forçando sempre o outro caminho da instrução.</td><td><code>if (a == b)  →  if (true)</code></td><td class="numero">4</td><td class="numero">3</td><td class="numero">1</td><td class="numero">0</td><td class="numero">75%</td></tr>
+<tr><td><code>VOID_METHOD_CALLS</code></td><td>Remove a chamada a um método void.</td><td><code>mailSender.send(msg);  →  (removido)</code></td><td class="numero">9</td><td class="numero">9</td><td class="numero">0</td><td class="numero">0</td><td class="numero">100%</td></tr>
+<tr class="total"><td colspan="3">Total</td><td class="numero">63</td><td class="numero">62</td><td class="numero">1</td><td class="numero">0</td><td class="numero">98%</td></tr>
+</tbody></table></div>
+<p class="nota">"Mortos" inclui os demais status que o Pitest conta como detectados, como TIMED_OUT. A descrição de cada mutante se refere à instrução de bytecode; em condições compostas, como as com ||, ela pode não corresponder literalmente à condição escrita em Java.</p>
+<h2>Mutantes</h2>
+<div class="rolagem"><table>
+<thead><tr><th>Status</th><th>Classe</th><th>Método</th><th>Linha</th><th>Operador</th><th>Descrição</th><th>Morto por</th></tr></thead>
+<tbody>
+<tr><td class="status status-sobreviveu">SURVIVED</td><td>EnviarNotificacaoWorker</td><td><code>formatarDataParaBrasileiro</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_109">109</a></td><td><code>REMOVE_CONDITIONALS_EQUAL_IF</code></td><td class="descricao">removed conditional - replaced equality check with true</td><td>-</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>&lt;init&gt;</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_38">38</a></td><td><code>EXPERIMENTAL_MEMBER_VARIABLE</code></td><td class="descricao">Removed assignment to member variable clienteCamunda</td><td>EnviarNotificacaoWorkerTest.deveAbrirInscricaoNosDoisTopicos</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>&lt;init&gt;</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_39">39</a></td><td><code>EXPERIMENTAL_MEMBER_VARIABLE</code></td><td class="descricao">Removed assignment to member variable notificacaoService</td><td>EnviarNotificacaoWorkerTest.deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>registrarWorkers</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_44">44</a></td><td><code>VOID_METHOD_CALLS</code></td><td class="descricao">removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::inscreverTopicoFeriasReprovadas</td><td>EnviarNotificacaoWorkerTest.deveAbrirInscricaoNosDoisTopicos</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>registrarWorkers</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_45">45</a></td><td><code>VOID_METHOD_CALLS</code></td><td class="descricao">removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::inscreverTopicoFeriasAprovadas</td><td>EnviarNotificacaoWorkerTest.deveAbrirInscricaoNosDoisTopicos</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>inscreverTopicoFeriasReprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_51">51</a></td><td><code>INLINE_CONSTS</code></td><td class="descricao">Substituted 1000 with 1001</td><td>EnviarNotificacaoWorkerTest.deveAbrirInscricaoNosDoisTopicos</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>inscreverTopicoFeriasReprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_51">51</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to org/camunda/bpm/client/ExternalTaskClient::subscribe</td><td>EnviarNotificacaoWorkerTest.deveAbrirInscricaoNosDoisTopicos</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>inscreverTopicoFeriasReprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_52">52</a></td><td><code>EXPERIMENTAL_NAKED_RECEIVER</code></td><td class="descricao">replaced call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::lockDuration with receiver</td><td>EnviarNotificacaoWorkerTest.deveAbrirInscricaoNosDoisTopicos</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>inscreverTopicoFeriasReprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_52">52</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::lockDuration</td><td>EnviarNotificacaoWorkerTest.deveAbrirInscricaoNosDoisTopicos</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>inscreverTopicoFeriasReprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_53">53</a></td><td><code>EXPERIMENTAL_NAKED_RECEIVER</code></td><td class="descricao">replaced call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::handler with receiver</td><td>EnviarNotificacaoWorkerTest.deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>inscreverTopicoFeriasReprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_53">53</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::handler</td><td>EnviarNotificacaoWorkerTest.deveAbrirInscricaoNosDoisTopicos</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>inscreverTopicoFeriasReprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_54">54</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::open</td><td>EnviarNotificacaoWorkerTest.deveAbrirInscricaoNosDoisTopicos</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>inscreverTopicoFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_60">60</a></td><td><code>INLINE_CONSTS</code></td><td class="descricao">Substituted 1000 with 1001</td><td>EnviarNotificacaoWorkerTest.deveAbrirInscricaoNosDoisTopicos</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>inscreverTopicoFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_60">60</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to org/camunda/bpm/client/ExternalTaskClient::subscribe</td><td>EnviarNotificacaoWorkerTest.deveAbrirInscricaoNosDoisTopicos</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>inscreverTopicoFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_61">61</a></td><td><code>EXPERIMENTAL_NAKED_RECEIVER</code></td><td class="descricao">replaced call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::lockDuration with receiver</td><td>EnviarNotificacaoWorkerTest.deveAbrirInscricaoNosDoisTopicos</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>inscreverTopicoFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_61">61</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::lockDuration</td><td>EnviarNotificacaoWorkerTest.deveAbrirInscricaoNosDoisTopicos</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>inscreverTopicoFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_62">62</a></td><td><code>EXPERIMENTAL_NAKED_RECEIVER</code></td><td class="descricao">replaced call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::handler with receiver</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>inscreverTopicoFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_62">62</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::handler</td><td>EnviarNotificacaoWorkerTest.deveAbrirInscricaoNosDoisTopicos</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>inscreverTopicoFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_63">63</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::open</td><td>EnviarNotificacaoWorkerTest.deveAbrirInscricaoNosDoisTopicos</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasReprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_70">70</a></td><td><code>EXPERIMENTAL_ARGUMENT_PROPAGATION</code></td><td class="descricao">replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString with argument</td><td>EnviarNotificacaoWorkerTest.deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasReprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_70">70</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString</td><td>EnviarNotificacaoWorkerTest.deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasReprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_71">71</a></td><td><code>EXPERIMENTAL_ARGUMENT_PROPAGATION</code></td><td class="descricao">replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString with argument</td><td>EnviarNotificacaoWorkerTest.deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasReprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_71">71</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString</td><td>EnviarNotificacaoWorkerTest.deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasReprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_73">73</a></td><td><code>VOID_METHOD_CALLS</code></td><td class="descricao">removed call to com/br/fluxo/pedidoferias/service/EnviarNotificacaoService::enviarEmailReprovado</td><td>EnviarNotificacaoWorkerTest.deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasReprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_76">76</a></td><td><code>VOID_METHOD_CALLS</code></td><td class="descricao">removed call to org/camunda/bpm/client/task/ExternalTaskService::complete</td><td>EnviarNotificacaoWorkerTest.deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasReprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_79">79</a></td><td><code>VOID_METHOD_CALLS</code></td><td class="descricao">removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::tratarFalhaNaTarefa</td><td>EnviarNotificacaoWorkerTest.deveDecrementarTentativasQuandoEnvioDeReprovacaoFalhar</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_87">87</a></td><td><code>EXPERIMENTAL_ARGUMENT_PROPAGATION</code></td><td class="descricao">replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString with argument</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_87">87</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_88">88</a></td><td><code>EXPERIMENTAL_ARGUMENT_PROPAGATION</code></td><td class="descricao">replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString with argument</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_88">88</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_89">89</a></td><td><code>EXPERIMENTAL_ARGUMENT_PROPAGATION</code></td><td class="descricao">replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString with argument</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_89">89</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataFormatadaECompletarTarefa</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_91">91</a></td><td><code>EXPERIMENTAL_ARGUMENT_PROPAGATION</code></td><td class="descricao">replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::formatarDataParaBrasileiro with argument</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataFormatadaECompletarTarefa</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_91">91</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::formatarDataParaBrasileiro</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_93">93</a></td><td><code>VOID_METHOD_CALLS</code></td><td class="descricao">removed call to com/br/fluxo/pedidoferias/service/EnviarNotificacaoService::enviarEmailAprovado</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_96">96</a></td><td><code>VOID_METHOD_CALLS</code></td><td class="descricao">removed call to org/camunda/bpm/client/task/ExternalTaskService::complete</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>processarFeriasAprovadas</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_99">99</a></td><td><code>VOID_METHOD_CALLS</code></td><td class="descricao">removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::tratarFalhaNaTarefa</td><td>EnviarNotificacaoWorkerTest.deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>obterVariavelString</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_104">104</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to org/camunda/bpm/client/task/ExternalTask::getVariable</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataFormatadaECompletarTarefa</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>obterVariavelString</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_105">105</a></td><td><code>NEGATE_CONDITIONALS</code></td><td class="descricao">negated conditional</td><td>EnviarNotificacaoWorkerTest.deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>obterVariavelString</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_105">105</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to java/lang/Object::toString</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataFormatadaECompletarTarefa</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>obterVariavelString</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_105">105</a></td><td><code>REMOVE_CONDITIONALS_EQUAL_ELSE</code></td><td class="descricao">removed conditional - replaced equality check with false</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataFormatadaECompletarTarefa</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>obterVariavelString</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_105">105</a></td><td><code>REMOVE_CONDITIONALS_EQUAL_IF</code></td><td class="descricao">removed conditional - replaced equality check with true</td><td>EnviarNotificacaoWorkerTest.deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>formatarDataParaBrasileiro</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_109">109</a></td><td><code>NEGATE_CONDITIONALS</code></td><td class="descricao">negated conditional</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataFormatadaECompletarTarefa</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>formatarDataParaBrasileiro</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_109">109</a></td><td><code>NEGATE_CONDITIONALS</code></td><td class="descricao">negated conditional</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>formatarDataParaBrasileiro</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_109">109</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to java/lang/String::isEmpty</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>formatarDataParaBrasileiro</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_109">109</a></td><td><code>REMOVE_CONDITIONALS_EQUAL_ELSE</code></td><td class="descricao">removed conditional - replaced equality check with false</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataFormatadaECompletarTarefa</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>formatarDataParaBrasileiro</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_109">109</a></td><td><code>REMOVE_CONDITIONALS_EQUAL_ELSE</code></td><td class="descricao">removed conditional - replaced equality check with false</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>formatarDataParaBrasileiro</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_109">109</a></td><td><code>REMOVE_CONDITIONALS_EQUAL_IF</code></td><td class="descricao">removed conditional - replaced equality check with true</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataFormatadaECompletarTarefa</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>formatarDataParaBrasileiro</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_110">110</a></td><td><code>EMPTY_RETURNS</code></td><td class="descricao">replaced return value with &quot;&quot; for com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::formatarDataParaBrasileiro</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataFormatadaECompletarTarefa</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>formatarDataParaBrasileiro</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_110">110</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to java/time/LocalDate::format</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataFormatadaECompletarTarefa</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>formatarDataParaBrasileiro</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_110">110</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to java/time/LocalDate::parse</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataFormatadaECompletarTarefa</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>formatarDataParaBrasileiro</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_110">110</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to java/time/format/DateTimeFormatter::ofPattern</td><td>EnviarNotificacaoWorkerTest.deveNotificarAprovacaoComDataFormatadaECompletarTarefa</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>tratarFalhaNaTarefa</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_116">116</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to org/camunda/bpm/client/task/ExternalTask::getRetries</td><td>EnviarNotificacaoWorkerTest.deveDecrementarTentativasQuandoEnvioDeReprovacaoFalhar</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>tratarFalhaNaTarefa</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_117">117</a></td><td><code>INLINE_CONSTS</code></td><td class="descricao">Substituted 1 with 0</td><td>EnviarNotificacaoWorkerTest.deveDecrementarTentativasQuandoEnvioDeReprovacaoFalhar</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>tratarFalhaNaTarefa</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_117">117</a></td><td><code>INLINE_CONSTS</code></td><td class="descricao">Substituted 3 with 4</td><td>EnviarNotificacaoWorkerTest.deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>tratarFalhaNaTarefa</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_117">117</a></td><td><code>MATH</code></td><td class="descricao">Replaced integer subtraction with addition</td><td>EnviarNotificacaoWorkerTest.deveDecrementarTentativasQuandoEnvioDeReprovacaoFalhar</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>tratarFalhaNaTarefa</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_117">117</a></td><td><code>NEGATE_CONDITIONALS</code></td><td class="descricao">negated conditional</td><td>EnviarNotificacaoWorkerTest.deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>tratarFalhaNaTarefa</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_117">117</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to java/lang/Integer::intValue</td><td>EnviarNotificacaoWorkerTest.deveDecrementarTentativasQuandoEnvioDeReprovacaoFalhar</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>tratarFalhaNaTarefa</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_117">117</a></td><td><code>REMOVE_CONDITIONALS_EQUAL_ELSE</code></td><td class="descricao">removed conditional - replaced equality check with false</td><td>EnviarNotificacaoWorkerTest.deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>tratarFalhaNaTarefa</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_117">117</a></td><td><code>REMOVE_CONDITIONALS_EQUAL_IF</code></td><td class="descricao">removed conditional - replaced equality check with true</td><td>EnviarNotificacaoWorkerTest.deveDecrementarTentativasQuandoEnvioDeReprovacaoFalhar</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>tratarFalhaNaTarefa</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_119">119</a></td><td><code>VOID_METHOD_CALLS</code></td><td class="descricao">removed call to org/camunda/bpm/client/task/ExternalTaskService::handleFailure</td><td>EnviarNotificacaoWorkerTest.deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>tratarFalhaNaTarefa</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_122">122</a></td><td><code>INLINE_CONSTS</code></td><td class="descricao">Substituted 1000 with 1001</td><td>EnviarNotificacaoWorkerTest.deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao</td></tr>
+<tr><td class="status status-detectado">KILLED</td><td>EnviarNotificacaoWorker</td><td><code>tratarFalhaNaTarefa</code></td><td class="numero"><a href="#org.pitest.mutationtest.report.html.SourceFile_122">122</a></td><td><code>NON_VOID_METHOD_CALLS</code></td><td class="descricao">removed call to java/lang/Exception::getMessage</td><td>EnviarNotificacaoWorkerTest.deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao</td></tr>
+</tbody></table></div>
+<p class="nota">Este relatório mostra o status informado pelo Pitest e não classifica mutantes como equivalentes.</p>
+</section>
+<!-- operadores:fim -->
+
+
+<table class="src">
+
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_1'/>
+1
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_1'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>package com.br.fluxo.pedidoferias.worker;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_2'/>
+2
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_2'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_3'/>
+3
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_3'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import com.br.fluxo.pedidoferias.service.EnviarNotificacaoService;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_4'/>
+4
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_4'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import jakarta.annotation.PostConstruct;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_5'/>
+5
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_5'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import org.camunda.bpm.client.ExternalTaskClient;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_6'/>
+6
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_6'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import org.camunda.bpm.client.task.ExternalTask;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_7'/>
+7
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_7'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import org.camunda.bpm.client.task.ExternalTaskService;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_8'/>
+8
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_8'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import org.springframework.beans.factory.annotation.Autowired;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_9'/>
+9
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_9'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import org.springframework.stereotype.Component;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_10'/>
+10
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_10'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_11'/>
+11
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_11'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import java.time.LocalDate;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_12'/>
+12
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_12'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import java.time.format.DateTimeFormatter;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_13'/>
+13
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_13'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>import java.util.logging.Logger;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_14'/>
+14
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_14'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_15'/>
+15
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_15'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>@Component</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_16'/>
+16
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_16'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>public class EnviarNotificacaoWorker {</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_17'/>
+17
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_17'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_18'/>
+18
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_18'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    private static final Logger LOGGER = Logger.getLogger(EnviarNotificacaoWorker.class.getName());</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_19'/>
+19
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_19'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_20'/>
+20
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_20'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private static final String TOPICO_FERIAS_REPROVADAS = &#34;notifica-negado&#34;;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_21'/>
+21
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_21'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private static final String TOPICO_FERIAS_APROVADAS = &#34;notifica-aprovado&#34;;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_22'/>
+22
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_22'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    </span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_23'/>
+23
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_23'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private static final long TEMPO_BLOQUEIO_TAREFA_MS = 1000L;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_24'/>
+24
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_24'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private static final int MAXIMO_TENTATIVAS = 3;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_25'/>
+25
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_25'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private static final long TEMPO_ESPERA_TENTATIVA_MS = 1000L;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_26'/>
+26
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_26'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    </span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_27'/>
+27
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_27'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private static final String VARIAVEL_EMAIL = &#34;email&#34;;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_28'/>
+28
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_28'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private static final String VARIAVEL_OBSERVACAO = &#34;obs&#34;;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_29'/>
+29
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_29'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private static final String VARIAVEL_DATA_FERIAS = &#34;data_ferias&#34;;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_30'/>
+30
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_30'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private static final String FORMATO_DATA_BR = &#34;dd/MM/yyyy&#34;;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_31'/>
+31
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_31'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private static final String MENSAGEM_ERRO_NOTIFICACAO = &#34;Erro ao enviar notifica&#231;&#227;o&#34;;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_32'/>
+32
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_32'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_33'/>
+33
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_33'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private final ExternalTaskClient clienteCamunda;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_34'/>
+34
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_34'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private final EnviarNotificacaoService notificacaoService;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_35'/>
+35
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_35'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_36'/>
+36
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_36'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    @Autowired</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_37'/>
+37
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_37'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    public EnviarNotificacaoWorker(ExternalTaskClient clienteCamunda, EnviarNotificacaoService notificacaoService) {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_38'/>
+38
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_38'>1</a>
+<span>
+
+1. &#60;init&#62; : Removed assignment to member variable clienteCamunda &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        this.clienteCamunda = clienteCamunda;</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_39'/>
+39
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_39'>1</a>
+<span>
+
+1. &#60;init&#62; : Removed assignment to member variable notificacaoService &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        this.notificacaoService = notificacaoService;</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_40'/>
+40
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_40'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    }</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_41'/>
+41
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_41'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_42'/>
+42
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_42'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    @PostConstruct</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_43'/>
+43
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_43'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    public void registrarWorkers() {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_44'/>
+44
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_44'>1</a>
+<span>
+
+1. registrarWorkers : removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::inscreverTopicoFeriasReprovadas &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        inscreverTopicoFeriasReprovadas();</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_45'/>
+45
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_45'>1</a>
+<span>
+
+1. registrarWorkers : removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::inscreverTopicoFeriasAprovadas &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        inscreverTopicoFeriasAprovadas();</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_46'/>
+46
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_46'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    }</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_47'/>
+47
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_47'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_48'/>
+48
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_48'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private void inscreverTopicoFeriasReprovadas() {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_49'/>
+49
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_49'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        LOGGER.info(&#34;Iniciando subscri&#231;&#227;o para o t&#243;pico de f&#233;rias reprovadas: &#34; + TOPICO_FERIAS_REPROVADAS);</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_50'/>
+50
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_50'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_51'/>
+51
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_51'>2</a>
+<span>
+
+1. inscreverTopicoFeriasReprovadas : Substituted 1000 with 1001 &rarr; KILLED<br/>
+
+2. inscreverTopicoFeriasReprovadas : removed call to org/camunda/bpm/client/ExternalTaskClient::subscribe &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        clienteCamunda.subscribe(TOPICO_FERIAS_REPROVADAS)</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_52'/>
+52
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_52'>2</a>
+<span>
+
+1. inscreverTopicoFeriasReprovadas : replaced call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::lockDuration with receiver &rarr; KILLED<br/>
+
+2. inscreverTopicoFeriasReprovadas : removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::lockDuration &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>                .lockDuration(TEMPO_BLOQUEIO_TAREFA_MS)</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_53'/>
+53
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_53'>2</a>
+<span>
+
+1. inscreverTopicoFeriasReprovadas : replaced call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::handler with receiver &rarr; KILLED<br/>
+
+2. inscreverTopicoFeriasReprovadas : removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::handler &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>                .handler(this::processarFeriasReprovadas)</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_54'/>
+54
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_54'>1</a>
+<span>
+
+1. inscreverTopicoFeriasReprovadas : removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::open &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>                .open();</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_55'/>
+55
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_55'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    }</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_56'/>
+56
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_56'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_57'/>
+57
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_57'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private void inscreverTopicoFeriasAprovadas() {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_58'/>
+58
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_58'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        LOGGER.info(&#34;Iniciando subscri&#231;&#227;o para o t&#243;pico de f&#233;rias aprovadas: &#34; + TOPICO_FERIAS_APROVADAS);</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_59'/>
+59
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_59'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>        </span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_60'/>
+60
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_60'>2</a>
+<span>
+
+1. inscreverTopicoFeriasAprovadas : Substituted 1000 with 1001 &rarr; KILLED<br/>
+
+2. inscreverTopicoFeriasAprovadas : removed call to org/camunda/bpm/client/ExternalTaskClient::subscribe &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        clienteCamunda.subscribe(TOPICO_FERIAS_APROVADAS)</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_61'/>
+61
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_61'>2</a>
+<span>
+
+1. inscreverTopicoFeriasAprovadas : removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::lockDuration &rarr; KILLED<br/>
+
+2. inscreverTopicoFeriasAprovadas : replaced call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::lockDuration with receiver &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>                .lockDuration(TEMPO_BLOQUEIO_TAREFA_MS)</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_62'/>
+62
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_62'>2</a>
+<span>
+
+1. inscreverTopicoFeriasAprovadas : replaced call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::handler with receiver &rarr; KILLED<br/>
+
+2. inscreverTopicoFeriasAprovadas : removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::handler &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>                .handler(this::processarFeriasAprovadas)</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_63'/>
+63
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_63'>1</a>
+<span>
+
+1. inscreverTopicoFeriasAprovadas : removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::open &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>                .open();</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_64'/>
+64
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_64'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    }</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_65'/>
+65
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_65'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_66'/>
+66
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_66'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private void processarFeriasReprovadas(ExternalTask tarefaExterna, ExternalTaskService servicoTarefaExterna) {</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_67'/>
+67
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_67'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>        try {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_68'/>
+68
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_68'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>            LOGGER.info(&#34;Processando f&#233;rias reprovadas para a inst&#226;ncia: &#34; + tarefaExterna.getProcessInstanceId());</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_69'/>
+69
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_69'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_70'/>
+70
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_70'>2</a>
+<span>
+
+1. processarFeriasReprovadas : removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString &rarr; KILLED<br/>
+
+2. processarFeriasReprovadas : replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString with argument &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            String emailColaborador = obterVariavelString(tarefaExterna, VARIAVEL_EMAIL);</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_71'/>
+71
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_71'>2</a>
+<span>
+
+1. processarFeriasReprovadas : replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString with argument &rarr; KILLED<br/>
+
+2. processarFeriasReprovadas : removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            String observacaoGestor = obterVariavelString(tarefaExterna, VARIAVEL_OBSERVACAO);</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_72'/>
+72
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_72'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_73'/>
+73
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_73'>1</a>
+<span>
+
+1. processarFeriasReprovadas : removed call to com/br/fluxo/pedidoferias/service/EnviarNotificacaoService::enviarEmailReprovado &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            notificacaoService.enviarEmailReprovado(emailColaborador, observacaoGestor);</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_74'/>
+74
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_74'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_75'/>
+75
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_75'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>            LOGGER.info(&#34;E-mail de reprova&#231;&#227;o enviado com sucesso!&#34;);</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_76'/>
+76
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_76'>1</a>
+<span>
+
+1. processarFeriasReprovadas : removed call to org/camunda/bpm/client/task/ExternalTaskService::complete &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            servicoTarefaExterna.complete(tarefaExterna);</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_77'/>
+77
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_77'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>            </span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_78'/>
+78
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_78'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        } catch (Exception excecao) {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_79'/>
+79
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_79'>1</a>
+<span>
+
+1. processarFeriasReprovadas : removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::tratarFalhaNaTarefa &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            tratarFalhaNaTarefa(tarefaExterna, servicoTarefaExterna, excecao);</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_80'/>
+80
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_80'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        }</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_81'/>
+81
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_81'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    }</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_82'/>
+82
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_82'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_83'/>
+83
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_83'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private void processarFeriasAprovadas(ExternalTask tarefaExterna, ExternalTaskService servicoTarefaExterna) {</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_84'/>
+84
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_84'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>        try {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_85'/>
+85
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_85'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>            LOGGER.info(&#34;Processando f&#233;rias aprovadas para a inst&#226;ncia: &#34; + tarefaExterna.getProcessInstanceId());</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_86'/>
+86
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_86'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_87'/>
+87
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_87'>2</a>
+<span>
+
+1. processarFeriasAprovadas : removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString &rarr; KILLED<br/>
+
+2. processarFeriasAprovadas : replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString with argument &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            String emailColaborador = obterVariavelString(tarefaExterna, VARIAVEL_EMAIL);</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_88'/>
+88
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_88'>2</a>
+<span>
+
+1. processarFeriasAprovadas : removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString &rarr; KILLED<br/>
+
+2. processarFeriasAprovadas : replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString with argument &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            String observacaoGestor = obterVariavelString(tarefaExterna, VARIAVEL_OBSERVACAO);</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_89'/>
+89
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_89'>2</a>
+<span>
+
+1. processarFeriasAprovadas : replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString with argument &rarr; KILLED<br/>
+
+2. processarFeriasAprovadas : removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            String dataInicioFerias = obterVariavelString(tarefaExterna, VARIAVEL_DATA_FERIAS);</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_90'/>
+90
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_90'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>            </span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_91'/>
+91
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_91'>2</a>
+<span>
+
+1. processarFeriasAprovadas : replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::formatarDataParaBrasileiro with argument &rarr; KILLED<br/>
+
+2. processarFeriasAprovadas : removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::formatarDataParaBrasileiro &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            String dataFormatada = formatarDataParaBrasileiro(dataInicioFerias);</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_92'/>
+92
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_92'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_93'/>
+93
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_93'>1</a>
+<span>
+
+1. processarFeriasAprovadas : removed call to com/br/fluxo/pedidoferias/service/EnviarNotificacaoService::enviarEmailAprovado &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            notificacaoService.enviarEmailAprovado(emailColaborador, dataFormatada, observacaoGestor);</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_94'/>
+94
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_94'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_95'/>
+95
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_95'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>            LOGGER.info(&#34;E-mail de aprova&#231;&#227;o enviado com sucesso!&#34;);</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_96'/>
+96
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_96'>1</a>
+<span>
+
+1. processarFeriasAprovadas : removed call to org/camunda/bpm/client/task/ExternalTaskService::complete &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            servicoTarefaExterna.complete(tarefaExterna);</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_97'/>
+97
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_97'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>            </span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_98'/>
+98
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_98'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        } catch (Exception excecao) {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_99'/>
+99
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_99'>1</a>
+<span>
+
+1. processarFeriasAprovadas : removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::tratarFalhaNaTarefa &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>            tratarFalhaNaTarefa(tarefaExterna, servicoTarefaExterna, excecao);</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_100'/>
+100
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_100'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        }</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_101'/>
+101
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_101'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    }</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_102'/>
+102
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_102'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    </span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_103'/>
+103
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_103'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private String obterVariavelString(ExternalTask tarefaExterna, String nomeVariavel) {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_104'/>
+104
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_104'>1</a>
+<span>
+
+1. obterVariavelString : removed call to org/camunda/bpm/client/task/ExternalTask::getVariable &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        Object variavel = tarefaExterna.getVariable(nomeVariavel);</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_105'/>
+105
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_105'>4</a>
+<span>
+
+1. obterVariavelString : removed conditional - replaced equality check with true &rarr; KILLED<br/>
+
+2. obterVariavelString : removed conditional - replaced equality check with false &rarr; KILLED<br/>
+
+3. obterVariavelString : removed call to java/lang/Object::toString &rarr; KILLED<br/>
+
+4. obterVariavelString : negated conditional &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        return variavel != null ? variavel.toString() : &#34;&#34;;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_106'/>
+106
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_106'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    }</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_107'/>
+107
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_107'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    </span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_108'/>
+108
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_108'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private String formatarDataParaBrasileiro(String dataPadraoIso) {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_109'/>
+109
+</td>
+<td class='survived'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_109'>7</a>
+<span>
+
+1. formatarDataParaBrasileiro : removed conditional - replaced equality check with true &rarr; SURVIVED<br/>
+
+2. formatarDataParaBrasileiro : negated conditional &rarr; KILLED<br/>
+
+3. formatarDataParaBrasileiro : removed conditional - replaced equality check with true &rarr; KILLED<br/>
+
+4. formatarDataParaBrasileiro : removed conditional - replaced equality check with false &rarr; KILLED<br/>
+
+5. formatarDataParaBrasileiro : removed call to java/lang/String::isEmpty &rarr; KILLED<br/>
+
+6. formatarDataParaBrasileiro : removed conditional - replaced equality check with false &rarr; KILLED<br/>
+
+7. formatarDataParaBrasileiro : negated conditional &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='survived'>        if (dataPadraoIso == null || dataPadraoIso.isEmpty()) return &#34;&#34;;</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_110'/>
+110
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_110'>4</a>
+<span>
+
+1. formatarDataParaBrasileiro : removed call to java/time/LocalDate::format &rarr; KILLED<br/>
+
+2. formatarDataParaBrasileiro : removed call to java/time/LocalDate::parse &rarr; KILLED<br/>
+
+3. formatarDataParaBrasileiro : replaced return value with &#34;&#34; for com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::formatarDataParaBrasileiro &rarr; KILLED<br/>
+
+4. formatarDataParaBrasileiro : removed call to java/time/format/DateTimeFormatter::ofPattern &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        return LocalDate.parse(dataPadraoIso).format(DateTimeFormatter.ofPattern(FORMATO_DATA_BR));</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_111'/>
+111
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_111'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    }</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_112'/>
+112
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_112'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_113'/>
+113
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_113'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>    private void tratarFalhaNaTarefa(ExternalTask tarefaExterna, ExternalTaskService servicoTarefaExterna, Exception excecao) {</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_114'/>
+114
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_114'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>        LOGGER.severe(&#34;Erro ao processar tarefa: &#34; + excecao.getMessage());</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_115'/>
+115
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_115'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>        </span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_116'/>
+116
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_116'>1</a>
+<span>
+
+1. tratarFalhaNaTarefa : removed call to org/camunda/bpm/client/task/ExternalTask::getRetries &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        Integer tentativasRestantes = tarefaExterna.getRetries();</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_117'/>
+117
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_117'>7</a>
+<span>
+
+1. tratarFalhaNaTarefa : negated conditional &rarr; KILLED<br/>
+
+2. tratarFalhaNaTarefa : Substituted 3 with 4 &rarr; KILLED<br/>
+
+3. tratarFalhaNaTarefa : removed conditional - replaced equality check with true &rarr; KILLED<br/>
+
+4. tratarFalhaNaTarefa : removed call to java/lang/Integer::intValue &rarr; KILLED<br/>
+
+5. tratarFalhaNaTarefa : Replaced integer subtraction with addition &rarr; KILLED<br/>
+
+6. tratarFalhaNaTarefa : Substituted 1 with 0 &rarr; KILLED<br/>
+
+7. tratarFalhaNaTarefa : removed conditional - replaced equality check with false &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        int novasTentativas = (tentativasRestantes == null) ? MAXIMO_TENTATIVAS : tentativasRestantes - 1;</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_118'/>
+118
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_118'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''></span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_119'/>
+119
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_119'>1</a>
+<span>
+
+1. tratarFalhaNaTarefa : removed call to org/camunda/bpm/client/task/ExternalTaskService::handleFailure &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>        servicoTarefaExterna.handleFailure(</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_120'/>
+120
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_120'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>                tarefaExterna,</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_121'/>
+121
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_121'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>                MENSAGEM_ERRO_NOTIFICACAO,</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_122'/>
+122
+</td>
+<td class='killed'>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_122'>2</a>
+<span>
+
+1. tratarFalhaNaTarefa : removed call to java/lang/Exception::getMessage &rarr; KILLED<br/>
+
+2. tratarFalhaNaTarefa : Substituted 1000 with 1001 &rarr; KILLED<br/>
+
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class='killed'>                excecao.getMessage(),</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_123'/>
+123
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_123'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>                novasTentativas,</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_124'/>
+124
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_124'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>                TEMPO_ESPERA_TENTATIVA_MS</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_125'/>
+125
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_125'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>        );</span></pre></td></tr>
+
+
+<tr>
+<td class='covered'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_126'/>
+126
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_126'></a>
+<span>
+</span>
+</span>
+</td>
+<td class='covered'><pre><span  class=''>    }</span></pre></td></tr>
+
+
+<tr>
+<td class='na'>
+<a name='org.pitest.mutationtest.report.html.SourceFile_127'/>
+127
+</td>
+<td class=''>
+<span class='pop'>
+<a href='#grouporg.pitest.mutationtest.report.html.SourceFile_127'></a>
+<span>
+</span>
+</span>
+</td>
+<td class=''><pre><span  class=''>}</span></pre></td></tr>
+
+
+
+<tr><td></td><td></td><td><h2>Mutations</h2></td></tr>
+
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_38'>38</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_38'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>&#60;init&#62;<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()]</span></span> Removed assignment to member variable clienteCamunda &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_39'>39</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_39'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>&#60;init&#62;<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes()]</span></span> Removed assignment to member variable notificacaoService &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_44'>44</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_44'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>registrarWorkers<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()]</span></span> removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::inscreverTopicoFeriasReprovadas &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_45'>45</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_45'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>registrarWorkers<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()]</span></span> removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::inscreverTopicoFeriasAprovadas &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_51'>51</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_51'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>inscreverTopicoFeriasReprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()]</span></span> Substituted 1000 with 1001 &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>inscreverTopicoFeriasReprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()]</span></span> removed call to org/camunda/bpm/client/ExternalTaskClient::subscribe &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_52'>52</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_52'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>inscreverTopicoFeriasReprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()]</span></span> replaced call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::lockDuration with receiver &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>inscreverTopicoFeriasReprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()]</span></span> removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::lockDuration &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_53'>53</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_53'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>inscreverTopicoFeriasReprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes()]</span></span> replaced call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::handler with receiver &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>inscreverTopicoFeriasReprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()]</span></span> removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::handler &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_54'>54</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_54'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>inscreverTopicoFeriasReprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()]</span></span> removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::open &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_60'>60</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_60'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>inscreverTopicoFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()]</span></span> Substituted 1000 with 1001 &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>inscreverTopicoFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()]</span></span> removed call to org/camunda/bpm/client/ExternalTaskClient::subscribe &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_61'>61</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_61'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>inscreverTopicoFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()]</span></span> removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::lockDuration &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>inscreverTopicoFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()]</span></span> replaced call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::lockDuration with receiver &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_62'>62</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_62'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>inscreverTopicoFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente()]</span></span> replaced call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::handler with receiver &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>inscreverTopicoFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()]</span></span> removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::handler &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_63'>63</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_63'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>inscreverTopicoFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()]</span></span> removed call to org/camunda/bpm/client/topic/TopicSubscriptionBuilder::open &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_70'>70</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_70'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>processarFeriasReprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes()]</span></span> removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>processarFeriasReprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes()]</span></span> replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString with argument &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_71'>71</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_71'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>processarFeriasReprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes()]</span></span> replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString with argument &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>processarFeriasReprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes()]</span></span> removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_73'>73</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_73'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>processarFeriasReprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes()]</span></span> removed call to com/br/fluxo/pedidoferias/service/EnviarNotificacaoService::enviarEmailReprovado &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_76'>76</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_76'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>processarFeriasReprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes()]</span></span> removed call to org/camunda/bpm/client/task/ExternalTaskService::complete &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_79'>79</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_79'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>processarFeriasReprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveDecrementarTentativasQuandoEnvioDeReprovacaoFalhar()]</span></span> removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::tratarFalhaNaTarefa &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_87'>87</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_87'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>processarFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente()]</span></span> removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>processarFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente()]</span></span> replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString with argument &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_88'>88</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_88'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>processarFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente()]</span></span> removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>processarFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente()]</span></span> replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString with argument &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_89'>89</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_89'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>processarFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente()]</span></span> replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString with argument &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>processarFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataFormatadaECompletarTarefa()]</span></span> removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::obterVariavelString &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_91'>91</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_91'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>processarFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataFormatadaECompletarTarefa()]</span></span> replaced call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::formatarDataParaBrasileiro with argument &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>processarFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente()]</span></span> removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::formatarDataParaBrasileiro &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_93'>93</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_93'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>processarFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente()]</span></span> removed call to com/br/fluxo/pedidoferias/service/EnviarNotificacaoService::enviarEmailAprovado &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_96'>96</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_96'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>processarFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente()]</span></span> removed call to org/camunda/bpm/client/task/ExternalTaskService::complete &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_99'>99</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_99'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>processarFeriasAprovadas<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao()]</span></span> removed call to com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::tratarFalhaNaTarefa &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_104'>104</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_104'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>obterVariavelString<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataFormatadaECompletarTarefa()]</span></span> removed call to org/camunda/bpm/client/task/ExternalTask::getVariable &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_105'>105</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_105'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>obterVariavelString<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes()]</span></span> removed conditional - replaced equality check with true &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>obterVariavelString<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataFormatadaECompletarTarefa()]</span></span> removed conditional - replaced equality check with false &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>3.<span><b>3</b><br/><b>Location : </b>obterVariavelString<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataFormatadaECompletarTarefa()]</span></span> removed call to java/lang/Object::toString &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>4.<span><b>4</b><br/><b>Location : </b>obterVariavelString<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes()]</span></span> negated conditional &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_109'>109</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_109'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>formatarDataParaBrasileiro<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente()]</span></span> negated conditional &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>formatarDataParaBrasileiro<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataFormatadaECompletarTarefa()]</span></span> removed conditional - replaced equality check with true &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>3.<span><b>3</b><br/><b>Location : </b>formatarDataParaBrasileiro<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataFormatadaECompletarTarefa()]</span></span> removed conditional - replaced equality check with false &rarr; KILLED</span>
+</div> <p class='SURVIVED'><span class='pop'>4.<span><b>4</b><br/><b>Location : </b>formatarDataParaBrasileiro<br/><b>Killed by : </b>none</span></span> removed conditional - replaced equality check with true &rarr; SURVIVED</span>
+<a title="Click to view covering tests" class="view-covered-by-tests" onClick="document.getElementById('MutationIdentifier-[location=Location-[clazz=com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorker,-method=formatarDataParaBrasileiro,-methodDesc=(Ljava/lang/String;)Ljava/lang/String;],-indexes=[4],-mutator=org.pitest.mutationtest.engine.gregor.mutators.RemoveConditionalMutator_EQUAL_IF]').style.display=(document.getElementById('MutationIdentifier-[location=Location-[clazz=com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorker,-method=formatarDataParaBrasileiro,-methodDesc=(Ljava/lang/String;)Ljava/lang/String;],-indexes=[4],-mutator=org.pitest.mutationtest.engine.gregor.mutators.RemoveConditionalMutator_EQUAL_IF]').style.display == 'block')?'none':'block';">Covering tests</a>
+<div class="covered-tests" id="MutationIdentifier-[location=Location-[clazz=com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorker,-method=formatarDataParaBrasileiro,-methodDesc=(Ljava/lang/String;)Ljava/lang/String;],-indexes=[4],-mutator=org.pitest.mutationtest.engine.gregor.mutators.RemoveConditionalMutator_EQUAL_IF]" style="display:none;">Covered by tests:
+<ul>
+<li>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente()]</li> <li>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao()]</li> <li>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataFormatadaECompletarTarefa()]</li> <li>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveRegistrarFalhaSemEnviarEmailQuandoDataForInvalida()]</li> 
+</ul>
+</div></div> <p class='KILLED'><span class='pop'>5.<span><b>5</b><br/><b>Location : </b>formatarDataParaBrasileiro<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente()]</span></span> removed call to java/lang/String::isEmpty &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>6.<span><b>6</b><br/><b>Location : </b>formatarDataParaBrasileiro<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente()]</span></span> removed conditional - replaced equality check with false &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>7.<span><b>7</b><br/><b>Location : </b>formatarDataParaBrasileiro<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataFormatadaECompletarTarefa()]</span></span> negated conditional &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_110'>110</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_110'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>formatarDataParaBrasileiro<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataFormatadaECompletarTarefa()]</span></span> removed call to java/time/LocalDate::format &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>formatarDataParaBrasileiro<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataFormatadaECompletarTarefa()]</span></span> removed call to java/time/LocalDate::parse &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>3.<span><b>3</b><br/><b>Location : </b>formatarDataParaBrasileiro<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataFormatadaECompletarTarefa()]</span></span> replaced return value with &#34;&#34; for com/br/fluxo/pedidoferias/worker/EnviarNotificacaoWorker::formatarDataParaBrasileiro &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>4.<span><b>4</b><br/><b>Location : </b>formatarDataParaBrasileiro<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataFormatadaECompletarTarefa()]</span></span> removed call to java/time/format/DateTimeFormatter::ofPattern &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_116'>116</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_116'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>tratarFalhaNaTarefa<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveDecrementarTentativasQuandoEnvioDeReprovacaoFalhar()]</span></span> removed call to org/camunda/bpm/client/task/ExternalTask::getRetries &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_117'>117</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_117'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>tratarFalhaNaTarefa<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao()]</span></span> negated conditional &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>tratarFalhaNaTarefa<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao()]</span></span> Substituted 3 with 4 &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>3.<span><b>3</b><br/><b>Location : </b>tratarFalhaNaTarefa<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveDecrementarTentativasQuandoEnvioDeReprovacaoFalhar()]</span></span> removed conditional - replaced equality check with true &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>4.<span><b>4</b><br/><b>Location : </b>tratarFalhaNaTarefa<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveDecrementarTentativasQuandoEnvioDeReprovacaoFalhar()]</span></span> removed call to java/lang/Integer::intValue &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>5.<span><b>5</b><br/><b>Location : </b>tratarFalhaNaTarefa<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveDecrementarTentativasQuandoEnvioDeReprovacaoFalhar()]</span></span> Replaced integer subtraction with addition &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>6.<span><b>6</b><br/><b>Location : </b>tratarFalhaNaTarefa<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveDecrementarTentativasQuandoEnvioDeReprovacaoFalhar()]</span></span> Substituted 1 with 0 &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>7.<span><b>7</b><br/><b>Location : </b>tratarFalhaNaTarefa<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao()]</span></span> removed conditional - replaced equality check with false &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_119'>119</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_119'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>tratarFalhaNaTarefa<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao()]</span></span> removed call to org/camunda/bpm/client/task/ExternalTaskService::handleFailure &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+<tr>
+<td><a href='#org.pitest.mutationtest.report.html.SourceFile_122'>122</a></td> 
+<td></td>
+<td>
+
+<a name='grouporg.pitest.mutationtest.report.html.SourceFile_122'/> 
+
+<p class='KILLED'><span class='pop'>1.<span><b>1</b><br/><b>Location : </b>tratarFalhaNaTarefa<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao()]</span></span> removed call to java/lang/Exception::getMessage &rarr; KILLED</span>
+</div> <p class='KILLED'><span class='pop'>2.<span><b>2</b><br/><b>Location : </b>tratarFalhaNaTarefa<br/><b>Killed by : </b>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao()]</span></span> Substituted 1000 with 1001 &rarr; KILLED</span>
+</div> 
+</td>
+</tr>
+
+</table>
+
+
+<h2>Active mutators</h2>
+<ul>
+
+<li class='mutator'>CONDITIONALS_BOUNDARY</li>
+
+<li class='mutator'>CONSTRUCTOR_CALLS</li>
+
+<li class='mutator'>EMPTY_RETURNS</li>
+
+<li class='mutator'>EXPERIMENTAL_ARGUMENT_PROPAGATION</li>
+
+<li class='mutator'>EXPERIMENTAL_BIG_DECIMAL</li>
+
+<li class='mutator'>EXPERIMENTAL_BIG_INTEGER</li>
+
+<li class='mutator'>EXPERIMENTAL_MEMBER_VARIABLE</li>
+
+<li class='mutator'>EXPERIMENTAL_NAKED_RECEIVER</li>
+
+<li class='mutator'>EXPERIMENTAL_REMOVE_SWITCH_MUTATOR_[0-99]</li>
+
+<li class='mutator'>EXPERIMENTAL_SWITCH</li>
+
+<li class='mutator'>FALSE_RETURNS</li>
+
+<li class='mutator'>INCREMENTS</li>
+
+<li class='mutator'>INLINE_CONSTS</li>
+
+<li class='mutator'>INVERT_NEGS</li>
+
+<li class='mutator'>MATH</li>
+
+<li class='mutator'>NEGATE_CONDITIONALS</li>
+
+<li class='mutator'>NON_VOID_METHOD_CALLS</li>
+
+<li class='mutator'>NULL_RETURNS</li>
+
+<li class='mutator'>PRIMITIVE_RETURNS</li>
+
+<li class='mutator'>REMOVE_CONDITIONALS_EQUAL_ELSE</li>
+
+<li class='mutator'>REMOVE_CONDITIONALS_EQUAL_IF</li>
+
+<li class='mutator'>REMOVE_CONDITIONALS_ORDER_ELSE</li>
+
+<li class='mutator'>REMOVE_CONDITIONALS_ORDER_IF</li>
+
+<li class='mutator'>REMOVE_INCREMENTS</li>
+
+<li class='mutator'>TRUE_RETURNS</li>
+
+<li class='mutator'>VOID_METHOD_CALLS</li>
+
+</ul>
+
+<h2>Tests examined</h2>
+<ul>
+<li>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveAbrirInscricaoNosDoisTopicos()] (8 ms)</li><li>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarReprovacaoComTextoVazioQuandoVariaveisEstiveremAusentes()] (9 ms)</li><li>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataVaziaQuandoVariavelEstiverAusente()] (12 ms)</li><li>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveUsarMaximoDeTentativasNaPrimeiraFalhaDeAprovacao()] (13 ms)</li><li>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarAprovacaoComDataFormatadaECompletarTarefa()] (17 ms)</li><li>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveNotificarReprovacaoECompletarTarefa()] (19 ms)</li><li>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveRegistrarFalhaSemEnviarEmailQuandoDataForInvalida()] (20 ms)</li><li>com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest.[engine:junit-jupiter]/[class:com.br.fluxo.pedidoferias.worker.EnviarNotificacaoWorkerTest]/[method:deveDecrementarTentativasQuandoEnvioDeReprovacaoFalhar()] (246 ms)</li>
+</ul>
+
+<br/>
+
+Report generated by <a href='https://pitest.org'>PIT</a> 1.30.1 <a href='https://github.com/sponsors/hcoles'>support</a>
+
+</body>
+</html>
