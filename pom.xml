@@ -122,7 +122,84 @@
                 </dependency>
             </dependencies>
         </plugin>
+        <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <version>1.30.1</version>
+
+            <configuration>
+                <mutators>
+                    <mutator>ALL</mutator>
+                </mutators>
+                <timestampedReports>false</timestampedReports>
+            </configuration>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.pitest</groupId>
+                    <artifactId>pitest-junit5-plugin</artifactId>
+                    <version>1.2.3</version>
+                </dependency>
+            </dependencies>
+        </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>mutacao</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <version>1.30.1</version>
+
+            <configuration>
+              <reportsDirectory>${maven.multiModuleProjectDirectory}/docs/pit-reports/${project.artifactId}</reportsDirectory>
+              <outputFormats>
+                <param>HTML</param>
+                <param>XML</param>
+              </outputFormats>
+            </configuration>
+
+            <executions>
+              <execution>
+                <id>mutacao</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>mutationCoverage</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.6.4</version>
+
+            <executions>
+              <execution>
+                <id>relatorio-operadores</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>${java.home}/bin/java</executable>
+                  <arguments>
+                    <argument>-Dfile.encoding=UTF-8</argument>
+                    <argument>${maven.multiModuleProjectDirectory}/config/pitest/RelatorioOperadores.java</argument>
+                    <argument>${maven.multiModuleProjectDirectory}/docs/pit-reports/${project.artifactId}</argument>
+                    <argument>${maven.multiModuleProjectDirectory}</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
