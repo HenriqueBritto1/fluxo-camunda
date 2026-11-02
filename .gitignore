@@ -8,6 +8,9 @@
 /dataSources.local.xml
 .env
 
+# Maven build output
+target/
+
 # Logs
 logs
 *.log
